@@ -6,7 +6,7 @@ function App() {
   return (
     <Routes>
       <Route>
-        <Route element={<IntroPage />} />
+        <Route path="/" element={<IntroPage />} />
         {/* <Route />
         <Route />
         <Route /> */}
