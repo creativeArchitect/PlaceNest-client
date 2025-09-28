@@ -7,6 +7,11 @@ import CompanyDashboard from "./pages/CompanyDashboard"
 import JobApplications from "./pages/JobApplications"
 import ResumeAssistant from "./pages/ResumeAssitant"
 import AvailableJobs from "./pages/AvailableJobs"
+import PostJob from "./pages/PostJob"
+import ManageJobs from "./pages/ManageJobs"
+import CoordinatorDashboard from "./CoordinatorDashboard"
+import StudentManagement from "./StudentManagement"
+import JobManagement from "./pages/JobManagement"
 
 function App() {
 
@@ -22,6 +27,12 @@ function App() {
 
         <Route path="/company/dashboard" element={<CompanyDashboard />} />
         <Route path="/company/students-applications" element={<JobApplications />} />
+        <Route path="/company/post-job" element={<PostJob />} />
+        <Route path="/company/manage-jobs" element={<ManageJobs />} />
+
+        <Route path="/coordinator/dashboard" element={<CoordinatorDashboard />} />
+        <Route path="/coordinator/manage-students" element={<StudentManagement />} />
+        <Route path="/coordinator/manage-jobs" element={<JobManagement />} />
 
         <Route path="/student/resume-review" element={<ResumeAssistant />} />
       </Route>

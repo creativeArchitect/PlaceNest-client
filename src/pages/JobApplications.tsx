@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   FiSearch,
   FiUser,
-  FiMail,
   FiBriefcase,
   FiCalendar,
   FiCheckCircle,
@@ -11,6 +10,7 @@ import {
   FiDownload,
   FiEye,
 } from "react-icons/fi";
+import SideBar from "../components/SideBar";
 
 type Application = {
   id: string;
@@ -52,6 +52,37 @@ const MOCK: Application[] = [
   },
 ];
 
+const stats = [
+  {
+    heading: "Total Applications",
+    data: 3,
+    icon: <FiUser className="h-6 w-6" />,
+    boxCss: "border border-gray-500/20 rounded-md bg-gray-300/10 p-4 flex items-center gap-4",
+    contentCss: "text-neutral-500"
+  },
+  {
+    heading: "Shortlisted",
+    data: 1,
+    icon: <FiCheckCircle className="h-6 w-6 text-blue-500" />,
+    boxCss: "border border-blue-500/20 rounded-md bg-blue-400/10 p-4 flex items-center gap-4",
+    contentCss: "text-blue-500"
+  },
+  {
+    heading: "Rejected",
+    data: 1,
+    icon: <FiXCircle className="h-6 w-6 text-red-500" />,
+    boxCss: "border border-red-500/20 rounded-md bg-red-400/10 p-4 flex items-center gap-4 p-4 flex items-center gap-4",
+    contentCss: "text-red-500"
+  },
+  {
+    heading: "Selected",
+    data: 0,
+    icon: <FiCheckCircle className="h-6 w-6 text-green-500" />,
+    boxCss: "border border-green-500/20 rounded-md bg-green-400/10 p-4 flex items-center gap-4",
+    contentCss: "text-green-500"
+  }
+]
+
 export default function JobApplications() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -76,27 +107,10 @@ export default function JobApplications() {
     <div className="min-h-screen bg-gray-50 text-gray-700">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 border-r bg-white min-h-screen p-6">
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-blue-200 rounded flex items-center justify-center text-blue-700 font-bold">
-              📂
-            </div>
-            <h1 className="font-semibold text-lg">JobPortal</h1>
-          </div>
-
-          <h3 className="text-sm font-semibold mb-1">Company Dashboard</h3>
-          <p className="text-xs text-gray-400 mb-6">Welcome back, Jane Smith</p>
-
-          <nav className="space-y-2">
-            <SidebarItem label="Dashboard" />
-            <SidebarItem label="Post Job" />
-            <SidebarItem label="My Jobs" />
-            <SidebarItem label="Applicants" active />
-          </nav>
-        </aside>
+        <SideBar />
 
         {/* Main content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-8 pl-72">
           <header className="flex items-start justify-between mb-6">
             <div>
               <h2 className="text-3xl font-bold">Applicant Management</h2>
@@ -111,14 +125,21 @@ export default function JobApplications() {
 
           {/* stat cards */}
           <section className="grid grid-cols-4 gap-4 mb-6">
-            <StatCard title="Total Applications" value={counts.total} icon={<FiUser />} />
-            <StatCard title="Shortlisted" value={counts.shortlisted} icon={<FiCheckCircle />} green />
-            <StatCard title="Rejected" value={counts.rejected} icon={<FiXCircle />} red />
-            <StatCard title="Selected" value={counts.selected} icon={<FiCheckCircle />} green />
+            {
+              stats.map(s=> (
+                <div className={`${s.boxCss} flex`}>
+                {s.icon}
+                <div className="flex gap-3">
+                    <span className={`${s.contentCss} text-md font-semibold`}>{s.heading} </span>
+                    <span className={`${s.contentCss} font-semibold`}>{s.data}</span>
+                  </div>
+              </div>
+              ))
+            }
           </section>
 
           {/* Filters */}
-          <section className="bg-white border rounded p-6 mb-6">
+          <section className="bg-white border border-black/10 rounded p-6 mb-6">
             <h4 className="font-semibold mb-4 flex items-center gap-2">
               <span className="text-xl">🔎</span> Filter Applications
             </h4>
@@ -132,7 +153,7 @@ export default function JobApplications() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search by name or email..."
-                    className="pl-10 pr-4 py-2 w-full border rounded-md bg-gray-50"
+                    className="pl-10 pr-4 py-2 w-full border border-black/20 border-black/20 rounded-md bg-gray-50"
                   />
                 </div>
               </div>
@@ -143,7 +164,7 @@ export default function JobApplications() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="appearance-none w-full py-2 px-3 border rounded-md bg-white"
+                    className="appearance-none w-full py-2 px-3 border border-black/20 rounded-md bg-white"
                   >
                     <option value="all">All Status</option>
                     <option value="shortlisted">Shortlisted</option>
@@ -158,7 +179,7 @@ export default function JobApplications() {
               <div>
                 <label className="block text-xs text-gray-500 mb-1">Job Position</label>
                 <div className="relative">
-                  <select className="appearance-none w-full py-2 px-3 border rounded-md bg-white">
+                  <select className="appearance-none w-full py-2 px-3 border border-black/20 rounded-md bg-white">
                     <option>All Jobs</option>
                     <option>Software Engineer - Frontend</option>
                   </select>
@@ -169,22 +190,17 @@ export default function JobApplications() {
           </section>
 
           {/* Applications list */}
-          <section className="bg-white border rounded p-6">
+          <section className="bg-white border border-black/10 rounded p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-xl font-semibold">Applications ({filtered.length})</h3>
                 <p className="text-sm text-gray-500">Review and take action on applications</p>
               </div>
-
-              <div className="flex items-center gap-2">
-                <button className="px-3 py-1 border rounded-md text-sm">Card View</button>
-                <button className="px-3 py-1 border rounded-md text-sm bg-gray-100">Table View</button>
-              </div>
             </div>
 
             <div className="space-y-4">
               {filtered.map((app) => (
-                <div key={app.id} className="border rounded-md p-4 flex items-start justify-between">
+                <div key={app.id} className="border border-black/10 shadow-xs rounded-md p-4 flex items-start justify-between bg-neutral-200/10">
                   <div className="flex gap-4">
                     <div className="w-12 h-12 rounded-full bg-red-400 flex items-center justify-center text-white font-semibold">JD</div>
                     <div>
@@ -199,8 +215,8 @@ export default function JobApplications() {
                       <div className="mt-3 text-sm text-gray-600">Applied for: <span className="font-medium">{app.position}</span></div>
 
                       <div className="mt-3 flex items-center gap-2">
-                        <button className="flex items-center gap-2 px-3 py-1 border rounded-md text-sm"><FiEye /> View Profile</button>
-                        <button className="flex items-center gap-2 px-3 py-1 border rounded-md text-sm"><FiDownload /> Resume</button>
+                        <button className="flex items-center gap-2 px-3 py-1 border border-black/10 rounded-sm text-sm hover:cursor-pointer"><FiEye /> View Profile</button>
+                        <button className="flex items-center gap-2 px-3 py-1 bg-black/80 hover:cursor-pointer text-white rounded-sm text-sm"><FiDownload /> Resume</button>
                       </div>
                     </div>
                   </div>
@@ -210,13 +226,13 @@ export default function JobApplications() {
 
                     <div className="flex items-center gap-2">
                       {app.status === "shortlisted" && (
-                        <button className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm">Select Candidate</button>
+                        <button className="px-3 py-1 bg-blue-500 text-white rounded-sm shadow-xs text-sm">Select Candidate</button>
                       )}
 
                       {app.status === "pending" && (
                         <>
-                          <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm flex items-center gap-2">Shortlist</button>
-                          <button className="px-3 py-1 bg-red-100 text-red-700 rounded-md text-sm">Reject</button>
+                          <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-sm shadow-xs text-sm flex items-center gap-2">Shortlist</button>
+                          <button className="px-3 py-1 bg-red-100 text-red-700 rounded-sm shadow-xs text-sm">Reject</button>
                         </>
                       )}
 
@@ -246,10 +262,10 @@ function SidebarItem({ label, active }: { label: string; active?: boolean }) {
 
 function StatCard({ title, value, icon, green, red }: { title: string; value: number; icon: React.ReactNode; green?: boolean; red?: boolean; }) {
   return (
-    <div className="border rounded-md bg-white p-4 flex items-center gap-4">
+    <div className="">
       <div className="w-12 h-12 rounded bg-gray-100 flex items-center justify-center">{icon}</div>
       <div>
-        <div className="text-xs text-gray-500">{title}</div>
+        <div className="">{title}</div>
         <div className={`text-2xl font-semibold ${green ? "text-green-600" : red ? "text-red-500" : "text-gray-800"}`}>{value}</div>
       </div>
     </div>
@@ -258,10 +274,10 @@ function StatCard({ title, value, icon, green, red }: { title: string; value: nu
 
 function StatusBadge({ status }: { status: Application["status"] }) {
   const map = {
-    shortlisted: { text: "SHORTLISTED", className: "bg-green-100 text-green-700" },
-    pending: { text: "PENDING", className: "bg-yellow-100 text-yellow-700" },
-    rejected: { text: "REJECTED", className: "bg-red-100 text-red-700" },
-    selected: { text: "SELECTED", className: "bg-green-100 text-green-700" },
+    shortlisted: { text: "SHORTLISTED", className: "bg-green-100 text-green-700 rounded-sm shadow-xs" },
+    pending: { text: "PENDING", className: "bg-yellow-100 text-yellow-700 rounded-sm shadow-xs" },
+    rejected: { text: "REJECTED", className: "bg-red-100 text-red-700 rounded-sm shadow-xs" },
+    selected: { text: "SELECTED", className: "bg-green-100 text-green-700 rounded-sm shadow-xs" },
   } as const;
   const info = map[status];
   return <div className={`px-3 py-1 text-xs rounded-full font-semibold ${info.className}`}>{info.text}</div>;

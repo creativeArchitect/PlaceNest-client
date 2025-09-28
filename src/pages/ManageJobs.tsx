@@ -1,0 +1,185 @@
+import {
+  FiClock,
+  FiSearch,
+  FiMapPin,
+  FiBriefcase,
+  FiCalendar,
+  FiDollarSign,
+  FiEye,
+  FiUsers,
+} from "react-icons/fi";
+import SideBar from "../components/SideBar";
+
+const stats = [
+  {
+    heading: "Total Jobs",
+    data: 3,
+    icon: <FiBriefcase className="h-6 w-6" />,
+    boxCss:
+      "border border-gray-500/20 rounded-md bg-gray-300/10 p-4 flex items-center gap-4",
+    contentCss: "text-neutral-500",
+  },
+  {
+    heading: "Active Jobs",
+    data: 1,
+    icon: <FiClock className="h-6 w-6 text-blue-500" />,
+    boxCss:
+      "border border-blue-500/20 rounded-md bg-blue-400/10 p-4 flex items-center gap-4",
+    contentCss: "text-blue-500",
+  },
+  {
+    heading: "Total Applications",
+    data: 1,
+    icon: <FiUsers className="h-6 w-6 text-red-500" />,
+    boxCss:
+      "border border-red-500/20 rounded-md bg-red-400/10 p-4 flex items-center gap-4 p-4 flex items-center gap-4",
+    contentCss: "text-red-500",
+  },
+  {
+    heading: "Pending Jobs",
+    data: 0,
+    icon: <FiClock className="h-6 w-6 text-green-500" />,
+    boxCss:
+      "border border-green-500/20 rounded-md bg-green-400/10 p-4 flex items-center gap-4",
+    contentCss: "text-green-500",
+  },
+];
+
+export default function ManageJobs() {
+  return (
+    <div className="min-h-screen bg-white text-gray-800">
+      <SideBar />
+
+      <main className="flex-1 p-8 pl-72">
+        {/* Header */}
+        <header className="flex justify-between items-center px-8 py-6">
+          <h2 className="text-2xl font-bold">Manage Jobs</h2>
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+            + Post New Job
+          </button>
+        </header>
+
+        <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+          {/* Stats */}
+          <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {stats.map((s) => (
+              <div className={`${s.boxCss} flex`}>
+                {s.icon}
+                <div className="flex gap-3">
+                  <span className={`${s.contentCss} text-md font-semibold`}>
+                    {s.heading}{" "}
+                  </span>
+                  <span className={`${s.contentCss} font-semibold`}>
+                    {s.data}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {/* Filters */}
+          <section className="border border-black/10 p-6 rounded-md space-y-4">
+            <h3 className="font-semibold text-lg">Filter Jobs</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <FiSearch className="absolute left-3 top-3 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by title or location..."
+                  className="pl-10 pr-4 py-2 w-full border border-black/20 rounded-md bg-gray-50"
+                />
+              </div>
+              <select className="border border-black/20 px-3 py-2 rounded-md bg-white">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Expired</option>
+              </select>
+              <select className="border border-black/20 px-3 py-2 rounded-md bg-white">
+                <option>All Types</option>
+                <option>Full Time</option>
+                <option>Part Time</option>
+                <option>Internship</option>
+              </select>
+            </div>
+          </section>
+
+          {/* Job Cards */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">Your Jobs (1)</h3>
+
+            <div className="border border-black/10 p-6 rounded-md space-y-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="text-xl font-semibold">
+                    Software Engineer - Frontend
+                  </h4>
+                  <div className="flex gap-2 mt-2">
+                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-sm shadow-xs">
+                      active
+                    </span>
+                    <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-sm shadow-xs">
+                      Expired
+                    </span>
+                  </div>
+                </div>
+                <button className="text-gray-500 hover:text-gray-700 text-xl">
+                  ⋯
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-1">
+                  <FiMapPin /> Bangalore, India
+                </div>
+                <div className="flex items-center gap-1">
+                  <FiBriefcase /> FULL TIME
+                </div>
+                <div className="flex items-center gap-1">
+                  <FiDollarSign /> ₹6L - ₹12L
+                </div>
+                <div className="flex items-center gap-1">
+                  <FiCalendar /> Posted 1/15/2024
+                </div>
+                <div className="flex items-center gap-1">
+                  <FiClock /> Deadline 2/15/2024
+                </div>
+                <div className="flex items-center gap-1">
+                  <FiUsers /> 1 applications
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-600">
+                Join our team to build next-generation web applications using
+                React, TypeScript, and modern frontend technologies.
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                  React
+                </span>
+                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                  TypeScript
+                </span>
+                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                  HTML/CSS
+                </span>
+                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                  +1 more
+                </span>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button className="flex items-center gap-2 border border-black/10 px-4 py-2 rounded text-sm hover:bg-gray-50 hover:cursor-pointer">
+                  <FiEye /> Preview
+                </button>
+                <button className="flex items-center gap-2 bg-blue-400/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded text-sm hover:bg-blue-700/10 hover:cursor-pointer">
+                  <FiUsers /> 1 Applicants
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
