@@ -13,22 +13,30 @@ import {
     {
       label: "Total Jobs",
       count: 4,
-      icon: <FiCheckCircle className="text-blue-600" />,
+      icon: <FiCheckCircle className="text-blue-600 h-8 w-8" />,
+      boxCss: "bg-blue-400/10 border border-blue-500/20 p-4 rounded-lg shadow flex items-center gap-3",
+      labelColor: "text-blue-500"
     },
     {
       label: "Active Jobs",
       count: 4,
-      icon: <FiBriefcase className="text-green-600" />,
+      icon: <FiBriefcase className="text-green-600 h-8 w-8" />,
+      boxCss: "bg-green-400/10 border border-green-500/20 p-4 rounded-lg shadow flex items-center gap-3",
+      labelColor: "text-green-500"
     },
     {
       label: "Pending Review",
       count: 0,
-      icon: <FiClock className="text-yellow-600" />,
+      icon: <FiClock className="text-yellow-600 h-8 w-8" />,
+      boxCss: "bg-yellow-400/10 border border-yellow-500/20 p-4 rounded-lg shadow flex items-center gap-3",
+      labelColor: "text-yellow-500"
     },
     {
       label: "Closed Jobs",
       count: 0,
-      icon: <FiXCircle className="text-red-600" />,
+      icon: <FiXCircle className="text-red-600 h-8 w-8" />,
+      boxCss: "bg-red-400/10 border border-red-500/20 p-4 rounded-lg shadow flex items-center gap-3",
+      labelColor: "text-red-500"
     },
   ];
   
@@ -92,15 +100,15 @@ import {
   
           {/* Stats */}
           <div className="grid grid-cols-4 gap-4 mb-8">
-            {statsData.map(({ label, count, icon }, i) => (
+            {statsData.map((s, i) => (
               <div
                 key={i}
-                className="bg-white p-4 rounded-lg shadow flex items-center gap-3"
+                className={`${s.boxCss}`}
               >
-                {icon}
-                <div>
-                  <p className="text-sm text-gray-500">{label}</p>
-                  <p className="text-lg font-bold">{count}</p>
+                {s.icon}
+                <div className="flex gap-3 items-center">
+                  <p className={`text-md font-semibold ${s.labelColor}`}>{s.label}</p>
+                  <p className={`text-lg font-bold ${s.labelColor}`}>{s.count}</p>
                 </div>
               </div>
             ))}
