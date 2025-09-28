@@ -12,6 +12,7 @@ import ManageJobs from "./pages/ManageJobs"
 import CoordinatorDashboard from "./CoordinatorDashboard"
 import StudentManagement from "./StudentManagement"
 import JobManagement from "./pages/JobManagement"
+import ManageCompanies from "./pages/ManageCompanies"
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/coordinator/dashboard" element={<CoordinatorDashboard />} />
         <Route path="/coordinator/manage-students" element={<StudentManagement />} />
         <Route path="/coordinator/manage-jobs" element={<JobManagement />} />
+        <Route path="/coordinator/manage-companies" element={<ManageCompanies />} />
 
         <Route path="/student/resume-review" element={<ResumeAssistant />} />
       </Route>
