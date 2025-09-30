@@ -13,6 +13,8 @@ import CoordinatorDashboard from "./CoordinatorDashboard"
 import StudentManagement from "./StudentManagement"
 import JobManagement from "./pages/JobManagement"
 import ManageCompanies from "./pages/ManageCompanies"
+import Register from "./pages/Register"
+import Login from "./pages/Login"
 
 function App() {
 
@@ -20,6 +22,9 @@ function App() {
     <Routes>
       <Route>
         <Route path="/" element={<IntroPage />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/profile" element={<StudentProfile />} />
