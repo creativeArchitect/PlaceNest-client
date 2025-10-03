@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Outlet, Route, Routes } from "react-router-dom"
 import IntroPage from "./pages/IntroPage"
 import StudentDashboard from "./pages/StudentDashboard"
 import StudentProfile from "./pages/StudentProfile"
@@ -15,12 +15,32 @@ import JobManagement from "./pages/JobManagement"
 import ManageCompanies from "./pages/ManageCompanies"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
+import { useAuth } from "./context/AuthContext"
+
+const PublicOnlyRoute = ()=> {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated || !user) {
+    return <Outlet />;
+  }
+
+  switch (user.role) {
+    case "STUDENT":
+      return <Navigate to="/student/dashboard" />;
+    case "COMPANY":
+      return <Navigate to="/company/dashboard" />;
+    case "COORDINATOR":
+      return <Navigate to="/coordinator/dashboard" />;
+    default:
+      return <Navigate to="/" />;
+  }
+}
 
 function App() {
 
   return (
     <Routes>
-      <Route>
+      <Route path="/" element={<PublicOnlyRoute />}>
         <Route path="/" element={<IntroPage />} />
 
         <Route path="/login" element={<Login />} />

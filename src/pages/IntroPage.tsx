@@ -1,7 +1,6 @@
 import {
   FaUserGraduate,
   FaBuilding,
-  FaChalkboardTeacher,
 } from "react-icons/fa";
 import { FiMessageSquare } from "react-icons/fi";
 
@@ -84,20 +83,6 @@ export default function IntroPage() {
           </div>
         ))}
       </section>
-
-      {/* AI Assistant Section */}
-      {/* <section className="max-w-5xl mx-auto mt-16 px-6">
-        <div className="bg-blue-50 border border-blue-100 rounded-lg p-8 text-center">
-          <h3 className="text-xl font-semibold mb-2">AI Resume Assistant</h3>
-          <p className="text-gray-600 mb-4">
-            Get personalized suggestions to improve your resume with our
-            advanced AI assistant.
-          </p>
-          <button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md">
-            Try AI Assistant
-          </button>
-        </div>
-      </section> */}
     </div>
   );
 }

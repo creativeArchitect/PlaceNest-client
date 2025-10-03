@@ -10,6 +10,7 @@ import {
 import { toast } from "sonner";
 import type { RegisterFormType } from "../types/auth.types";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Register: React.FC = () => {
   const [role, setRole] = useState<"STUDENT" | "COMPANY" | "COORDINATOR">(
@@ -19,6 +20,8 @@ const Register: React.FC = () => {
   if (!token) {
     toast.error("Token is not exists, please login!!!");
   }
+
+  const { register } = useAuth();
 
   const [formData, setFormData] = useState<RegisterFormType>({
     name: "",
@@ -38,19 +41,7 @@ const Register: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_API_URL}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-      }
+        register(formData)
     } catch (err) {
       toast.error("Error in login");
     }
