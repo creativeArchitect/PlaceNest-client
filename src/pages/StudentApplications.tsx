@@ -1,13 +1,11 @@
-// src/pages/Applications.tsx
 import React from "react";
 import {
-  FiBriefcase,
-  FiFileText,
   FiEye,
   FiMapPin,
   FiCalendar,
 } from "react-icons/fi";
 import SideBar from "../components/SideBar";
+import { useNavigate } from "react-router-dom";
 
 type Application = {
   id: number;
@@ -64,6 +62,8 @@ const statusColors: Record<Application["status"], string> = {
 };
 
 const StudentApplications: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <SideBar />
@@ -163,7 +163,8 @@ const StudentApplications: React.FC = () => {
 
               {/* Footer */}
               <div className="flex justify-end mt-4">
-                <button className="px-4 py-2 border border-black/10 rounded-md text-gray-700 hover:bg-gray-100 flex items-center gap-2 text-sm transition">
+                <button className="px-4 py-2 border border-black/10 rounded-md text-gray-700 hover:bg-gray-100 flex items-center gap-2 text-sm transition hover:cursor-pointer"
+                onClick={()=> navigate('/student/job')}>
                   <FiEye /> View Details
                 </button>
               </div>

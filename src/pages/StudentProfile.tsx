@@ -1,36 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiUser, FiCheckCircle, FiUpload } from "react-icons/fi";
+import SideBar from "../components/SideBar";
+import type { StudentProfile } from "../types/student.types";
 
 const StudentProfile: React.FC = () => {
+  const [formData, setFormData] = useState<StudentProfile>({
+    name: "",
+    email: "",
+    phone: "",
+    branch: "",
+    year: "",
+    cgpa: 0,
+    activeBacklog: false,
+    backlogs: 0,
+    resumeUrl: "",
+    description: ""
+  });
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=> {
+  //   e.preventDefault();
+  //   setFormData(pre=> (
+  //     {...pre}
+  //     [e.target.name]: e.target.value
+  //   ))
+  // }
+
   return (
     <div className="flex min-h-screen bg-gray-50 font-sans">
       {/* Sidebar */}
-      <aside className="w-56 bg-white border-r border-gray-200 p-6">
-        <h2 className="text-lg font-bold text-blue-600 mb-4">JobPortal</h2>
-        <p className="text-sm text-gray-600 mb-6">
-          Student Dashboard <br /> Welcome back, John Doe
-        </p>
-        <nav className="space-y-2">
-          <a
-            className="block rounded-md px-3 py-2 bg-blue-600 text-white font-medium"
-            href="#"
-          >
-            Profile
-          </a>
-          <a className="block rounded-md px-3 py-2 hover:bg-gray-100" href="#">
-            Jobs
-          </a>
-          <a className="block rounded-md px-3 py-2 hover:bg-gray-100" href="#">
-            Applications
-          </a>
-          <a className="block rounded-md px-3 py-2 hover:bg-gray-100" href="#">
-            Resume Assistant
-          </a>
-        </nav>
-      </aside>
+      <SideBar />
 
       {/* Main Content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 ml-64">
         {/* Header */}
         <header className="flex items-center justify-between mb-2">
           <h1 className="text-2xl font-semibold">Profile</h1>
@@ -125,17 +126,14 @@ const StudentProfile: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">
               Your profile verification status
             </p>
-            <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-2 rounded-md text-sm mb-4">
+            <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-2 rounded-md text-sm mb-4 border border-green-500/20">
               <FiCheckCircle className="text-green-500" />
-              <span>Profile Verified</span>
-              <span className="ml-auto bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs">
-                Active
-              </span>
+              Profile Verified
             </div>
             <div className="text-center border border-dashed border-gray-300 p-6 rounded-md text-gray-500">
               <FiUpload className="mx-auto mb-2" size={22} />
               <p className="text-sm mb-2">No resume uploaded</p>
-              <button className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
+              <button className="bg-blue-500 text-white px-3 py-2 rounded-sm shadow-sm text-sm hover:cursor-pointer hover:bg-blue-600">
                 Upload Resume
               </button>
             </div>
@@ -166,7 +164,7 @@ const StudentProfile: React.FC = () => {
               (skill) => (
                 <span
                   key={skill}
-                  className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md text-sm"
+                  className="bg-blue-50 text-gray-700 px-3 py-1 rounded-sm text-sm border border-gray-600/20"
                 >
                   {skill}
                 </span>

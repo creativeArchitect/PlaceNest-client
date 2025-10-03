@@ -3,12 +3,11 @@ import {
   FiUser,
   FiBriefcase,
   FiFileText,
-  FiMessageSquare,
   FiTrendingUp,
 } from "react-icons/fi";
 import SideBar from "../components/SideBar";
+import { useNavigate } from "react-router-dom";
 
-// 📊 Stats Configuration
 const stats = [
   {
     title: "12 Applications Sent",
@@ -48,7 +47,6 @@ const stats = [
   },
 ];
 
-// 📝 Recent Applications
 const recentApplications = [
   {
     title: "Software Engineer",
@@ -73,29 +71,9 @@ const recentApplications = [
   },
 ];
 
-// ⚡ Quick Actions
-const quickActions = [
-  {
-    label: "Browse Jobs",
-    icon: <FiBriefcase />,
-    btnCss:
-      "flex items-center gap-2 w-full bg-blue-100 text-blue-700 border border-blue-200 px-3 py-2 rounded-md mb-2 hover:bg-blue-200 hover:cursor-pointer",
-  },
-  {
-    label: "Update Profile",
-    icon: <FiUser />,
-    btnCss:
-      "flex items-center gap-2 w-full bg-gray-50 border border-gray-200 text-gray-800 px-3 py-2 rounded-md mb-2 hover:bg-gray-100 hover:cursor-pointer",
-  },
-  {
-    label: "Resume Assistant",
-    icon: <FiMessageSquare />,
-    btnCss:
-      "flex items-center gap-2 w-full bg-gray-50 border border-gray-200 text-gray-800 px-3 py-2 rounded-md hover:bg-gray-100 hover:cursor-pointer",
-  },
-];
-
 const StudentDashboard: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex bg-gray-50 font-sans min-h-screen">
       {/* Sidebar */}
@@ -123,7 +101,7 @@ const StudentDashboard: React.FC = () => {
         </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 📄 Recent Applications */}
           <section className="col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-medium mb-4">Recent Applications</h3>
@@ -149,20 +127,10 @@ const StudentDashboard: React.FC = () => {
               ))}
             </div>
 
-            <button className="mt-4 border border-gray-200 text-blue-600 py-2 px-4 rounded-md text-sm hover:bg-blue-50">
+            <button className="mt-4 border border-gray-200 text-blue-600 py-2 px-4 rounded-md text-sm hover:bg-blue-50 hover:cursor-pointer"
+            onClick={()=> navigate('/student/jobs')}>
               View All Applications
             </button>
-          </section>
-
-          {/* ⚡ Quick Actions */}
-          <section className="bg-white border border-black/10 rounded-md p-6 shadow-sm">
-            <h3 className="text-lg font-medium mb-4">Quick Actions</h3>
-            {quickActions.map((action, index) => (
-              <button key={index} className={action.btnCss}>
-                {action.icon}
-                {action.label}
-              </button>
-            ))}
           </section>
         </div>
       </main>

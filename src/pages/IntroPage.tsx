@@ -3,6 +3,7 @@ import {
   FaBuilding,
 } from "react-icons/fa";
 import { FiMessageSquare } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const cards = [
   {
@@ -38,6 +39,8 @@ const cards = [
 ];
 
 export default function IntroPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Navbar */}
@@ -45,12 +48,6 @@ export default function IntroPage() {
         <div className="flex items-center space-x-2 bg-blue-500 px-2 py-1 rounded-sm shadow-md">
           {/* <div className="w-6 h-6 bg-blue-500 rounded-md"></div> */}
           <h1 className="text-xl font-semibold text-white">PlaceNest</h1>
-        </div>
-        <div className="flex items-center space-x-4">
-          <button className="text-gray-600 hover:text-gray-900 border border-black/20 px-4 py-1 rounded-sm shadow-sm hover:cursor-pointer hover:bg-gray-500/10">Login</button>
-          {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-            Get Started
-          </button> */}
         </div>
       </header>
 
@@ -63,7 +60,8 @@ export default function IntroPage() {
           Connect students with top companies, streamline recruitment with
           AI-powered tools, and manage placements efficiently.
         </p>
-        <button className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-semibold hover:cursor-pointer">
+        <button className="mt-6 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-semibold hover:cursor-pointer"
+        onClick={()=> navigate('/register')}>
           Get Started
         </button>
       </section>

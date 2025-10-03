@@ -10,11 +10,6 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const Login: React.FC = () => {
-  const token = localStorage.getItem("token");
-  if(!token) {
-    toast.error("Token is not exists, please login!!!");
-  }
-
   const [formData, setFormData] = useState<LoginFormType>({
     email: "",
     password: "",

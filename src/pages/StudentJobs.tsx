@@ -3,10 +3,10 @@ import {
   FiSearch,
   FiMapPin,
   FiClock,
-  FiBriefcase,
   FiFileText,
 } from "react-icons/fi";
 import SideBar from "../components/SideBar";
+import { useNavigate } from "react-router-dom";
 
 type Job = {
   id: number;
@@ -78,7 +78,9 @@ const jobs: Job[] = [
   },
 ];
 
-const AvailableJobs: React.FC = () => {
+const StudentJobs: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <SideBar />
@@ -94,7 +96,7 @@ const AvailableJobs: React.FC = () => {
           <h3 className="font-semibold mb-3 flex items-center gap-2">
             <FiSearch /> Filter Jobs
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input
               type="text"
               placeholder="Search jobs or companies..."
@@ -106,11 +108,6 @@ const AvailableJobs: React.FC = () => {
             <select className="border border-black/20 rounded-md px-3 py-2 w-full">
               <option>All Types</option>
             </select>
-            <input
-              type="text"
-              placeholder="Enter location..."
-              className="border border-black/20 rounded-md px-3 py-2 w-full"
-            />
           </div>
         </div>
 
@@ -172,7 +169,8 @@ const AvailableJobs: React.FC = () => {
                   <span className="font-medium">{job.salary}</span>
                 </div>
                 <div className="flex gap-2">
-                  <button className="px-4 py-2 border border-black/10 rounded-md text-gray-700 hover:bg-gray-100 transition text-sm">
+                  <button className="px-4 py-2 border border-black/10 rounded-md text-gray-700 hover:bg-gray-100 transition text-sm hover:cursor-pointer"
+                  onClick={()=> navigate('/student/job')}>
                     View Details
                   </button>
                   {job.applied ? (
@@ -194,4 +192,4 @@ const AvailableJobs: React.FC = () => {
   );
 };
 
-export default AvailableJobs;
+export default StudentJobs;

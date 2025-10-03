@@ -9,18 +9,12 @@ import {
 } from "react-icons/fa";
 import { toast } from "sonner";
 import type { RegisterFormType } from "../types/auth.types";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 const Register: React.FC = () => {
   const [role, setRole] = useState<"STUDENT" | "COMPANY" | "COORDINATOR">(
     "STUDENT"
   );
-  const token = localStorage.getItem("token");
-  if (!token) {
-    toast.error("Token is not exists, please login!!!");
-  }
-
   const { register } = useAuth();
 
   const [formData, setFormData] = useState<RegisterFormType>({

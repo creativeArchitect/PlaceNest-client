@@ -6,7 +6,6 @@ import StudentApplications from "./pages/StudentApplications"
 import CompanyDashboard from "./pages/CompanyDashboard"
 import JobApplications from "./pages/JobApplications"
 import ResumeAssistant from "./pages/ResumeAssitant"
-import AvailableJobs from "./pages/AvailableJobs"
 import PostJob from "./pages/PostJob"
 import ManageJobs from "./pages/ManageJobs"
 import CoordinatorDashboard from "./CoordinatorDashboard"
@@ -16,6 +15,9 @@ import ManageCompanies from "./pages/ManageCompanies"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
 import { useAuth } from "./context/AuthContext"
+import StudentJobs from "./pages/StudentJobs"
+import JobDetailsPage from "./pages/JobDetail"
+import JobDetails from "./pages/JobDetail"
 
 const PublicOnlyRoute = ()=> {
   const { isAuthenticated, user } = useAuth();
@@ -40,16 +42,17 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<PublicOnlyRoute />}>
+      <Route element={<PublicOnlyRoute />}>
         <Route path="/" element={<IntroPage />} />
-
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+      </Route>
 
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/profile" element={<StudentProfile />} />
         <Route path="/student/applications" element={<StudentApplications />} />
-        <Route path="/student/jobs" element={<AvailableJobs />} />
+        <Route path="/student/jobs" element={<StudentJobs />} />
+        <Route path="/student/job" element={<JobDetails />} />
 
         <Route path="/company/dashboard" element={<CompanyDashboard />} />
         <Route path="/company/students-applications" element={<JobApplications />} />
@@ -62,7 +65,6 @@ function App() {
         <Route path="/coordinator/manage-companies" element={<ManageCompanies />} />
 
         <Route path="/student/resume-review" element={<ResumeAssistant />} />
-      </Route>
     </Routes>
   )
 }
