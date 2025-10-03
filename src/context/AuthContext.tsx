@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("auth");
+    const savedToken = localStorage.getItem("token");
     if (savedToken) {
       const decoded = jwtDecode<JwtDecode>(savedToken);
       const isExpired = decoded.exp * 1000 < Date.now();
@@ -99,6 +99,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(response.data.data);
         setToken(response.data.token);
         setIsAuthenticated(true);
+
+        localStorage.setItem("token", token as string);
         localStorage.setItem(
           "auth",
           JSON.stringify({
@@ -107,7 +109,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             phone: response.data.data?.lbk,
           })
         );
-        localStorage.setItem("token", JSON.stringify(token));
         toast.success(response.data.message);
       }
     } catch (err) {
@@ -148,8 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-}
-  
+};
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
