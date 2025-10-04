@@ -105,8 +105,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           "auth",
           JSON.stringify({
             id: response.data.data?.id,
+            name: response.data.data?.name,
             email: response.data.data?.email,
             phone: response.data.data?.lbk,
+            role: response.data.data?.role
           })
         );
         toast.success(response.data.message);
