@@ -5,6 +5,15 @@ export type Role = "STUDENT" | "COORDINATOR" | "COMPANY"
 
 export type JobStatus = "ACTIVE" | "CLOSED" | "DRAFT"
 
+export type Application = {
+    id?: string;
+    jobTitle: string;
+    candidateName: string;
+    email: string;
+    date: string;
+    status: string;
+}
+
 export interface Job {
     id?: string
     type: JobType
@@ -14,9 +23,10 @@ export interface Job {
     role: Role
     package: string
     cgpaCutOff: Float32Array
-    deadline: Date
+    deadline: string
     status: JobStatus
     companyId: string
+    applications?: string[]
 }
 
 

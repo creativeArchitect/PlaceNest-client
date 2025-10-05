@@ -4,44 +4,50 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 // import { toast } from "sonner";
 // import axios from "axios";
-import type { Job } from "../types/job.types";
-
-type Application = {
-  id: string;
-  jobTitle: string;
-  candidateName: string;
-  email: string;
-  date: string;
-  status: string;
-};
+import type { Application, Job } from "../types/job.types";
 
 // ✅ Mock data (used for now)
 const mockJobs: Job[] = [
   {
     id: "1",
     title: "Frontend Developer",
+    description: "Develop and maintain UI components using React.",
     location: "Bangalore, India",
-    lastDate: "10/11/2025",
-    status: "active",
-    type: "full-time",
-    applications: [1, 2, 3], // dummy array just to get count
+    deadline: "10/11/2025",
+    status: "ACTIVE",
+    type: "FullTime",
+    role: "COMPANY",
+    package: "10 LPA",
+    cgpaCutOff: new Float32Array([6.5]),
+    companyId: "comp123",
+    applications: ["1", "2", "3"],
   },
   {
     id: "2",
     title: "Backend Developer",
+    description: "Build and maintain backend services using Node.js.",
     location: "Noida, India",
-    lastDate: "10/15/2025",
-    status: "closed",
-    type: "full-time",
-    applications: [1, 2],
+    deadline: "10/15/2025",
+    status: "CLOSED",
+    type: "FullTime",
+    role: "COMPANY",
+    package: "12 LPA",
+    cgpaCutOff: new Float32Array([7.0]),
+    companyId: "comp123",
+    applications: ["4", "5"],
   },
   {
     id: "3",
     title: "UI/UX Designer",
+    description: "Design user interfaces and experiences for web platforms.",
     location: "Remote",
-    lastDate: "11/01/2025",
-    status: "active",
-    type: "part-time",
+    deadline: "11/01/2025",
+    status: "ACTIVE",
+    type: "PartTime",
+    role: "COMPANY",
+    package: "6 LPA",
+    cgpaCutOff: new Float32Array([6.0]),
+    companyId: "comp123",
     applications: [],
   },
 ];
@@ -76,9 +82,11 @@ const mockApplications: Application[] = [
 export default function CompanyDashboard() {
   const navigate = useNavigate();
   const [companyJobs, setCompanyJobs] = useState<Job[]>(mockJobs);
-  const [jobApplications, setJobApplications] = useState<Application[]>(mockApplications);
+  const [jobApplications, setJobApplications] =
+    useState<Application[]>(mockApplications);
   const [activeJobs, setActiveJobs] = useState<number>(0);
-  const [shortlistedApplications, setShortlistedApplications] = useState<number>(0);
+  const [shortlistedApplications, setShortlistedApplications] =
+    useState<number>(0);
 
   // ✅ Keeping logic for future use (commented out)
   /*
@@ -128,8 +136,10 @@ export default function CompanyDashboard() {
     // return () => clearInterval(interval);
 
     // Logic for mock data
-    setActiveJobs(mockJobs.filter((job) => job.status === "active").length);
-    setShortlistedApplications(mockApplications.filter((app) => app.status === "shortlisted").length);
+    setActiveJobs(mockJobs.filter((job) => job.status === "ACTIVE").length);
+    setShortlistedApplications(
+      mockApplications.filter((app) => app.status === "shortlisted").length
+    );
   }, []);
 
   return (
@@ -157,7 +167,10 @@ export default function CompanyDashboard() {
           <section className="grid grid-cols-4 gap-4 mb-6">
             <StatCard title="Total Jobs Posted" value={companyJobs.length} />
             <StatCard title="Active Jobs" value={activeJobs} />
-            <StatCard title="Total Applications" value={jobApplications.length} />
+            <StatCard
+              title="Total Applications"
+              value={jobApplications.length}
+            />
             <StatCard title="Shortlisted" value={shortlistedApplications} />
           </section>
 
@@ -168,7 +181,9 @@ export default function CompanyDashboard() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-semibold">Recent Job Postings</h3>
-                  <p className="text-sm text-gray-500">Your latest job postings</p>
+                  <p className="text-sm text-gray-500">
+                    Your latest job postings
+                  </p>
                 </div>
                 <button
                   className="text-sm text-blue-600 hover:text-blue-500"
@@ -179,7 +194,10 @@ export default function CompanyDashboard() {
               </div>
               <div className="flex flex-col gap-2 h-80 overflow-y-auto">
                 {companyJobs.slice(0, 5).map((j) => (
-                  <div key={j.id} className="flex justify-between border border-black/10 rounded px-4 py-3">
+                  <div
+                    key={j.id}
+                    className="flex justify-between border border-black/10 rounded px-4 py-3"
+                  >
                     <div className="flex flex-col gap-1 mt-1">
                       <div className="font-semibold">{j.title}</div>
                       <div className="flex gap-2 items-center text-xs text-gray-500">
@@ -187,7 +205,7 @@ export default function CompanyDashboard() {
                           <FiMapPin /> {j.location}
                         </div>
                         <div className="flex items-center gap-1">
-                          <FiCalendar /> {j.lastDate}
+                          <FiCalendar /> {j.deadline}
                         </div>
                       </div>
                       <div className="text-xs text-gray-500">
@@ -225,7 +243,10 @@ export default function CompanyDashboard() {
                   <p className="text-sm text-gray-500">No applications yet</p>
                 ) : (
                   jobApplications.slice(0, 5).map((app) => (
-                    <div key={app.id} className="border border-black/10 rounded p-4 flex items-start justify-between">
+                    <div
+                      key={app.id}
+                      className="border border-black/10 rounded p-4 flex items-start justify-between"
+                    >
                       <div>
                         <div className="font-semibold">{app.candidateName}</div>
                         <div className="text-sm text-gray-500">{app.email}</div>
