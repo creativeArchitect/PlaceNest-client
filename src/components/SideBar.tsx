@@ -12,6 +12,8 @@ import type { IconType } from "react-icons";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { TbUsers } from "react-icons/tb";
 import { RiPassValidLine } from "react-icons/ri";
+import { FaRegBuilding } from "react-icons/fa";
+import { GrValidate } from "react-icons/gr";
 
 type SideBarType = {
   label: string;
@@ -40,8 +42,8 @@ const coordinatorSidebarItems: SideBarType[] = [
   { label: "Dashboard", icon: MdDashboard, tab: "dashboard", route: "/coordinator/dashboard" },
   { label: "Profile", icon: FiUser, tab: "profile", route: "/coordinator/profile" },
   { label: "Students Verification", icon: RiPassValidLine, tab: "verify-students", route: "/coordinator/verify-students" },
-  { label: "Job Approvals", icon: FiBriefcase, tab: "job-approvals", route: "/coordinator/job-approvals" },
-  { label: "Companies", icon: FiFileText, tab: "companies", route: "/coordinator/companies" }
+  { label: "Job Approvals", icon: GrValidate, tab: "job-approvals", route: "/coordinator/job-approvals" },
+  { label: "Companies", icon: FaRegBuilding, tab: "companies", route: "/coordinator/companies" }
 ];
 
 
