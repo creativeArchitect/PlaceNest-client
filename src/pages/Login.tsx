@@ -14,11 +14,12 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   });
+  const token = localStorage.getItem("auth");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setFormData((pre) => ({
-      ...formData,
+      ...pre,
       [e.target.name]: e.target.value,
     }));
   };
