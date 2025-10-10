@@ -6,15 +6,15 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import type { LoginFormType } from "../types/auth.types";
-import axios from "axios";
 import { toast } from "sonner";
+import { useAuth } from "../context/AuthContext";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormType>({
     email: "",
     password: "",
   });
-  const token = localStorage.getItem("auth");
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -26,15 +26,8 @@ const Login: React.FC = () => {
 
   const handleSubmit = async ()=> {
     try{
-      const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      if(response.data.success){
-        toast.success(response.data.message);
-      }
+      console.log("Submitting form:", formData);
+      login(formData);
     }catch(err){
       toast.error("Error in login");
     }
@@ -80,6 +73,7 @@ const Login: React.FC = () => {
                 type="email"
                 placeholder="Enter your email address"
                 className="flex-1 outline-none text-sm text-gray-700"
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -95,12 +89,14 @@ const Login: React.FC = () => {
                 type="password"
                 placeholder="Enter your password"
                 className="flex-1 outline-none text-sm text-gray-700"
+                onChange={handleChange}
               />
             </div>
           </div>
 
           {/* Login */}
-          <button className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-md py-2 font-medium mb-4 transition">
+          <button className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-md py-2 font-medium mb-4 transition"
+          onClick={handleSubmit}>
             Login
           </button>
 

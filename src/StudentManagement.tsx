@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiUser,
   FiMail,
@@ -10,6 +10,9 @@ import {
   FiSearch,
 } from "react-icons/fi";
 import SideBar from "./components/SideBar";
+import { toast } from "sonner";
+import axios from "axios";
+import type { StudentVerification } from "./types/student.types";
 
 const students = [
   {
@@ -84,6 +87,30 @@ const students = [
 ];
 
 export default function StudentManagement() {
+  const [studentVerifyApplication, setStudentVerifyApplication] = useState<StudentVerification[]>([]);
+  const token = localStorage.getItem("token");
+
+  const fetchStudentVerficationApplication = async ()=> {
+    try{
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/profile/verification`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        console.log("response.data.data: ", response.data.data);
+
+        setStudentVerifyApplication(response.data.data);
+    }catch(err) {
+      toast.error("Error in fetching the student verfication application");
+    }
+  }
+
+  useEffect(()=> {
+    fetchStudentVerficationApplication();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-gray-700 font-sans">
         <SideBar />
@@ -159,25 +186,25 @@ export default function StudentManagement() {
 
           {/* Student Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {students.map((s) => (
+            {studentVerifyApplication.map((s) => (
               <div
                 key={s.id}
                 className="border border-black/10 rounded-md p-4 space-y-3 shadow-xs"
               >
                 <div className="flex items-center gap-4">
-                  <div>{s.avatar}</div>
+                  {/* <div>{s.avatar}</div> */}
                   <div>
                     <p className="font-semibold text-gray-900">{s.name}</p>
                     <p className="text-sm text-gray-500">{s.id}</p>
                   </div>
                   <span
                     className={`ml-auto px-3 py-1 text-xs font-semibold rounded-sm shadow-xs ${
-                      s.status === "Verified"
+                      s.verificationStatus === "APPROVED"
                         ? "bg-blue-100 text-blue-600"
-                        : "bg-gray-200 text-gray-600"
+                        : s.verificationStatus === "PENDING" ? "bg-gray-200 text-gray-600" : "bg-red-200 text-red-600"
                     }`}
                   >
-                    {s.status}
+                    {s.verificationStatus}
                   </span>
                 </div>
                 <div className="space-y-1 text-sm text-gray-600">
@@ -188,10 +215,10 @@ export default function StudentManagement() {
                     <FiPhone /> {s.phone}
                   </p>
                   <p className="flex items-center gap-2">
-                    <FiBookOpen /> {s.department}
+                    <FiBookOpen /> {s.branch}
                   </p>
                   <p className="flex items-center gap-2">
-                    <FiCalendar /> {s.graduation}
+                    <FiCalendar /> {s.year}
                   </p>
                 </div>
                 <div className="flex gap-3 mt-4">
@@ -212,7 +239,7 @@ export default function StudentManagement() {
                     View Profile
                   </button>
 
-                  {s.status === "Verified" ? (
+                  {s.verificationStatus === "APPROVED" ? (
                     <button className="border border-red-500/10 rounded-sm py-2 px-4 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-sm text-white hover:cursor-pointer">
                       <FiXCircle />
                       Revoke

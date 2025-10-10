@@ -41,14 +41,14 @@ const companySidebarItems: SideBarType[] = [
 const coordinatorSidebarItems: SideBarType[] = [
   { label: "Dashboard", icon: MdDashboard, tab: "dashboard", route: "/coordinator/dashboard" },
   { label: "Profile", icon: FiUser, tab: "profile", route: "/coordinator/profile" },
-  { label: "Students Verification", icon: RiPassValidLine, tab: "verify-students", route: "/coordinator/verify-students" },
+  { label: "Students Verification", icon: RiPassValidLine, tab: "verify-students", route: "/coordinator/manage-students" },
   { label: "Job Approvals", icon: GrValidate, tab: "job-approvals", route: "/coordinator/job-approvals" },
   { label: "Companies", icon: FaRegBuilding, tab: "companies", route: "/coordinator/companies" }
 ];
 
 
 const SideBar = () => {
-  const [activeTab, setActiveTab] = useState<string>("jobs");
+  const [activeTab, setActiveTab] = useState<string>("dashboard");
   const navigate = useNavigate();
   const { user } = useAuth();
 

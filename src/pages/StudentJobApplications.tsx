@@ -11,6 +11,8 @@ import {
   FiEye,
 } from "react-icons/fi";
 import SideBar from "../components/SideBar";
+import { toast } from "sonner";
+import axios from "axios";
 
 type Application = {
   id: string;
@@ -83,16 +85,36 @@ const stats = [
   }
 ]
 
-export default function JobApplications() {
+export default function StudentJobApplications() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [initialJobApplications, setInitialJobApplications] = useState<Application[]>([]);
+  const [jobApplications, setJobApplications] = useState<Application[]>([]);
+  const token = localStorage.getItem("token");
 
-  const counts = {
-    total: MOCK.length,
-    shortlisted: MOCK.filter((m) => m.status === "shortlisted").length,
-    rejected: MOCK.filter((m) => m.status === "rejected").length,
-    selected: MOCK.filter((m) => m.status === "selected").length,
-  };
+  // const counts = {
+  //   total: MOCK.length,
+  //   shortlisted: MOCK.filter((m) => m.status === "shortlisted").length,
+  //   rejected: MOCK.filter((m) => m.status === "rejected").length,
+  //   selected: MOCK.filter((m) => m.status === "selected").length,
+  // };
+
+  const fetchApplications = async ()=> {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(response.data?.success){
+        setInitialJobApplications(response.data?.data);
+        setJobApplications(response.data?.data);
+        toast.success(response.data?.success);
+      }
+    }catch (err){
+      toast.error("Error in fetching applications");
+    }
+  }
 
   const filtered = MOCK.filter((a) => {
     if (statusFilter !== "all" && a.status !== statusFilter) return false;
@@ -114,13 +136,9 @@ export default function JobApplications() {
           <header className="flex items-start justify-between mb-6">
             <div>
               <h2 className="text-3xl font-bold">Applicant Management</h2>
-              <p className="text-sm text-gray-500">Review and manage applications for your jobs</p>
+              <p className="text-sm text-gray-500 mt-1">Review and manage applications for your jobs</p>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">Company User</div>
-              <div className="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center">JS</div>
-            </div>
           </header>
 
           {/* stat cards */}
@@ -153,7 +171,7 @@ export default function JobApplications() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search by name or email..."
-                    className="pl-10 pr-4 py-2 w-full border border-black/20 border-black/20 rounded-md bg-gray-50"
+                    className="pl-10 pr-4 py-2 w-full border border-black/20 rounded-md bg-gray-50"
                   />
                 </div>
               </div>

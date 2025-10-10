@@ -4,7 +4,6 @@ import StudentDashboard from "./pages/StudentDashboard"
 import StudentProfile from "./pages/StudentProfile"
 import StudentApplications from "./pages/StudentApplications"
 import CompanyDashboard from "./pages/CompanyDashboard"
-import JobApplications from "./pages/JobApplications"
 import ResumeAssistant from "./pages/ResumeAssitant"
 import PostJob from "./pages/PostJob"
 import ManageJobs from "./pages/ManageJobs"
@@ -16,8 +15,8 @@ import Register from "./pages/Register"
 import Login from "./pages/Login"
 import { useAuth } from "./context/AuthContext"
 import StudentJobs from "./pages/StudentJobs"
-import JobDetailsPage from "./pages/JobDetail"
 import JobDetails from "./pages/JobDetail"
+import StudentJobApplications from "./pages/StudentJobApplications"
 
 const PublicOnlyRoute = ()=> {
   const { isAuthenticated, user } = useAuth();
@@ -55,7 +54,7 @@ function App() {
         <Route path="/student/job" element={<JobDetails />} />
 
         <Route path="/company/dashboard" element={<CompanyDashboard />} />
-        <Route path="/company/students-applications" element={<JobApplications />} />
+        <Route path="/company/students-applications" element={<StudentJobApplications />} />
         <Route path="/company/post-job" element={<PostJob />} />
         <Route path="/company/manage-jobs" element={<ManageJobs />} />
 

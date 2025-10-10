@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiSearch,
   FiMapPin,
@@ -7,79 +7,99 @@ import {
 } from "react-icons/fi";
 import SideBar from "../components/SideBar";
 import { useNavigate } from "react-router-dom";
-
-type Job = {
-  id: number;
-  title: string;
-  company: string;
-  description: string;
-  tags: string[];
-  location: string;
-  salary: string;
-  deadline: string;
-  type: "FULL TIME" | "INTERNSHIP";
-  daysAgo: number;
-  applied?: boolean;
-};
-
-const jobs: Job[] = [
-  {
-    id: 1,
-    title: "Software Engineer - Frontend",
-    company: "TechCorp Inc.",
-    description:
-      "Join our team to build next-generation web applications using React, TypeScript, and modern frontend technologies.",
-    tags: ["React", "TypeScript", "HTML/CSS", "Git"],
-    location: "Bangalore, India",
-    salary: "₹6.0L - ₹12.0L",
-    deadline: "2/15/2024",
-    type: "FULL TIME",
-    daysAgo: 621,
-    applied: true,
-  },
-  {
-    id: 2,
-    title: "Data Analyst Intern",
-    company: "DataTech Solutions",
-    description:
-      "Exciting internship opportunity to work with big data and analytics. Learn from industry experts and work on real projects.",
-    tags: ["Python", "SQL", "Excel", "Statistics"],
-    location: "Mumbai, India",
-    salary: "₹25K - ₹40K",
-    deadline: "2/20/2024",
-    type: "INTERNSHIP",
-    daysAgo: 616,
-  },
-  {
-    id: 3,
-    title: "Product Manager",
-    company: "InnovateTech",
-    description:
-      "Lead product development for our flagship SaaS platform. Work cross-functionally with engineering and design teams.",
-    tags: ["Product Management", "Analytics", "Communication", "Leadership"],
-    location: "Hyderabad, India",
-    salary: "₹12.0L - ₹20.0L",
-    deadline: "2/10/2024",
-    type: "FULL TIME",
-    daysAgo: 626,
-  },
-  {
-    id: 4,
-    title: "UI/UX Designer",
-    company: "DesignStudio",
-    description:
-      "Create beautiful and intuitive user experiences. Work on mobile and web applications for various industries.",
-    tags: ["Figma", "Adobe Creative Suite", "User Research", "Prototyping"],
-    location: "Remote",
-    salary: "₹5.0L - ₹9.0L",
-    deadline: "2/18/2024",
-    type: "FULL TIME",
-    daysAgo: 618,
-  },
-];
+import { toast } from "sonner";
+import axios from "axios";
+import type { Job } from "../types/job.types";
 
 const StudentJobs: React.FC = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const [initialJobData, setInitialJobData] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+
+  const branchData = ['CS', 'CY', 'IT', 'ME', 'ECE', 'EIC', 'EE', 'CE'];
+  const jobTypes = ["Internship", "PartTime", "FullTime", "Contract"]
+
+  const fetchJobs = async ()=> {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_API_URL}/job/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if(Array.isArray(response.data.data)){
+        setInitialJobData(response.data.data);
+        setJobs(response.data.data);
+        toast.success("Job are fetched successfully")
+      }
+    } catch(err){
+      toast.error("Error in fetching jobs");
+    }
+  }
+
+  const handleFilter = (input: string)=> {
+    if(input === ""){
+      setJobs(initialJobData);
+    }else {
+      setJobs(jobs.filter(job=> job.title === input));
+    }
+  }
+
+  useEffect(()=> {
+    fetchJobs();
+  }, []);
+
+  if(jobs.length === 0){
+    return (
+      <div className="flex min-h-screen bg-gray-50">
+      <SideBar />
+
+      <main className="flex-1 pl-72 p-8">
+        <h1 className="text-2xl font-bold mb-1">Job Opportunities</h1>
+        <p className="text-gray-500 mb-6">
+          Discover and apply for jobs that match your profile
+        </p>
+
+        {/* Filter Bar */}
+        <div className="bg-white border border-black/10 rounded-md p-4 mb-6 shadow-xs">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <FiSearch /> Filter Jobs
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Search jobs..."
+              className="border border-black/20 rounded-md px-3 py-2 w-full"
+              onChange={(e)=> handleFilter(e.target.value)}
+            />
+            <select className="border border-black/20 rounded-md px-3 py-2 w-full">
+              {
+                branchData.map((b, idx)=> (
+                  <option key={idx}>{b}</option>
+                ))
+              }
+            </select>
+            <select className="border border-black/20 rounded-md px-3 py-2 w-full">
+            {
+                jobTypes.map((b, idx)=> (
+                  <option key={idx}>{b}</option>
+                ))
+              }
+            </select>
+          </div>
+        </div>
+
+        <div className="flex justify-center relative top-[20%]">
+        <h1 className="text-2xl font-bold mb-1">No jobs available</h1>
+        </div>
+      </main>
+    </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -99,14 +119,23 @@ const StudentJobs: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input
               type="text"
-              placeholder="Search jobs or companies..."
+              placeholder="Search jobs"
               className="border border-black/20 rounded-md px-3 py-2 w-full"
+              onChange={(e)=> handleFilter(e.target.value)}
             />
             <select className="border border-black/20 rounded-md px-3 py-2 w-full">
-              <option>All Departments</option>
+              {
+                branchData.map((b, idx)=> (
+                  <option key={idx}>{b}</option>
+                ))
+              }
             </select>
             <select className="border border-black/20 rounded-md px-3 py-2 w-full">
-              <option>All Types</option>
+            {
+                jobTypes.map((b, idx)=> (
+                  <option key={idx}>{b}</option>
+                ))
+              }
             </select>
           </div>
         </div>
@@ -124,20 +153,16 @@ const StudentJobs: React.FC = () => {
                   <h2 className="font-semibold text-lg text-gray-800">
                     {job.title}
                   </h2>
-                  <p className="text-gray-500 text-sm">{job.company}</p>
+                  <p className="text-gray-500 text-sm">{job.company.name}</p>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <span
-                    className={`px-3 py-1 rounded-sm shadow-xs font-medium ${
-                      job.type === "FULL TIME"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-blue-100 text-blue-700"
-                    }`}
+                    className="px-3 py-1 rounded-sm shadow-xs font-medium bg-green-100 text-green-700"
                   >
                     {job.type}
                   </span>
                   <span className="flex items-center gap-1 text-gray-400">
-                    <FiClock /> {job.daysAgo} days ago
+                    <FiClock /> {job.createdAt} days ago
                   </span>
                 </div>
               </div>
@@ -146,7 +171,7 @@ const StudentJobs: React.FC = () => {
               <p className="mt-3 text-gray-600 text-sm">{job.description}</p>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 mt-4">
+              {/* <div className="flex flex-wrap gap-2 mt-4">
                 {job.tags.map((tag) => (
                   <span
                     key={tag}
@@ -155,7 +180,7 @@ const StudentJobs: React.FC = () => {
                     {tag}
                   </span>
                 ))}
-              </div>
+              </div> */}
 
               {/* Footer */}
               <div className="flex justify-between items-center mt-5 text-sm text-gray-500 flex-wrap gap-2">
@@ -173,7 +198,7 @@ const StudentJobs: React.FC = () => {
                   onClick={()=> navigate('/student/job')}>
                     View Details
                   </button>
-                  {job.applied ? (
+                  {/* {job.applied ? (
                     <span className="px-4 py-2 rounded-md text-green-600 border border-green-600/10 bg-green-50 text-sm">
                       Applied
                     </span>
@@ -181,7 +206,7 @@ const StudentJobs: React.FC = () => {
                     <button className="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-700 transition text-sm">
                       Apply Now
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

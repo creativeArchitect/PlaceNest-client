@@ -75,7 +75,7 @@ export default function IntroPage() {
             <p className="text-gray-600 mb-4 text-sm">
               {c.description}
             </p>
-            <button className={c.buttonCss}>
+            <button className={c.buttonCss} onClick={()=> navigate('/register')}>
               {c.buttonText}
             </button>
           </div>

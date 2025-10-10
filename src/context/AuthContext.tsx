@@ -7,22 +7,15 @@ import {
 } from "react";
 import type {
   LoginFormType,
-  RegisterFormType,
-  Role,
+  RegisterFormType
 } from "../types/auth.types";
 import axios from "axios";
 import { toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
 
-interface UserType {
-  name: string;
-  email: string;
-  phone: string;
-  role: Role;
-}
 
 type AuthContextTypes = {
-  user: UserType | null;
+  user: any,
   isAuthenticated: boolean;
   login: (loginDetails: LoginFormType) => void;
   register: (registerDetails: RegisterFormType) => void;
@@ -34,7 +27,7 @@ type JwtDecode = { exp: number };
 const AuthContext = createContext<AuthContextTypes | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string>();
+  const [token, setToken] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState(null);
 
@@ -60,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (loginFormData: LoginFormType) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_API_URL}/login`,
+        `${import.meta.env.VITE_BASE_API_URL}/auth/login`,
         loginFormData,
         {
           headers: {
@@ -72,6 +65,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (response.data.success) {
         setUser(response.data.data);
         setToken(response.data.token);
+
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem(
+          "auth",
+          JSON.stringify({...response.data.data})
+        );
         toast.success(response.data.message);
       }
     } catch (err) {
@@ -86,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (registerFormData: RegisterFormType) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_API_URL}/register`,
+        `${import.meta.env.VITE_BASE_API_URL}/auth/register`,
         registerFormData,
         {
           headers: {
@@ -100,16 +99,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(response.data.token);
         setIsAuthenticated(true);
 
-        localStorage.setItem("token", token as string);
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem(
           "auth",
-          JSON.stringify({
-            id: response.data.data?.id,
-            name: response.data.data?.name,
-            email: response.data.data?.email,
-            phone: response.data.data?.lbk,
-            role: response.data.data?.role
-          })
+          JSON.stringify({...response.data.data})
         );
         toast.success(response.data.message);
       }

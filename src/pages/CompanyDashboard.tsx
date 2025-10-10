@@ -87,11 +87,11 @@ export default function CompanyDashboard() {
   const [activeJobs, setActiveJobs] = useState<number>(0);
   const [shortlistedApplications, setShortlistedApplications] =
     useState<number>(0);
+    const token = localStorage.getItem("token");
 
   // ✅ Keeping logic for future use (commented out)
   /*
   const fetchJobPosts = async () => {
-    const token = localStorage.getItem("auth");
     try {
       const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/company/jobs`, {
         headers: {
@@ -109,7 +109,6 @@ export default function CompanyDashboard() {
   };
 
   const fetchJobApplications = async () => {
-    const token = localStorage.getItem("auth");
     try {
       const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/company/applications`, {
         headers: {

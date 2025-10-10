@@ -288,10 +288,10 @@ const Register: React.FC = () => {
                       className="w-full border border-black/10 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                     >
                       <option value="">Select year</option>
-                      <option value="1st Year">1st Year</option>
-                      <option value="2nd Year">2nd Year</option>
-                      <option value="3rd Year">3rd Year</option>
-                      <option value="4th Year">4th Year</option>
+                      <option value="FIRST">FIRST</option>
+                      <option value="SECOND">SECOND</option>
+                      <option value="THIRD">THIRD</option>
+                      <option value="FOURTH">FOURTH</option>
                     </select>
                   </div>
                 </div>
@@ -347,7 +347,7 @@ const Register: React.FC = () => {
               )}
 
               {/* Industry (for student) */}
-              {role === "STUDENT" && (
+              {role === "COMPANY" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Industry <span className="text-red-500">*</span>
@@ -430,8 +430,8 @@ const Register: React.FC = () => {
                   {role !== "COMPANY" && <span className="text-red-500">*</span>}
                 </label>
                 <input
-                  name="linkedin"
-                  value={formData.linkedin ?? ""}
+                  name="linkedinUrl"
+                  value={formData.linkedinUrl ?? ""}
                   onChange={handleChange}
                   type="url"
                   placeholder="https://linkedin.com/..."
@@ -467,7 +467,7 @@ const Register: React.FC = () => {
 
             <p className="text-sm text-gray-600 text-center mt-4">
               Already have an account?{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <a href="/login" className="text-blue-600 hover:underline">
                 Login
               </a>
             </p>
@@ -493,32 +493,34 @@ const validateForm = (formData: RegisterFormType, role: Role) => {
     website,
     foundedYear,
     location,
-    linkedin,
+    linkedinUrl,
     resumeUrl,
   } = formData;
+
+  console.log("formDataL ", formData);
 
   if (!name || !email || !phone || !password) {
     return "Name, email, phone, and password are required.";
   }
 
-  if (!linkedin) {
+  if (!linkedinUrl) {
     return "LinkedIn URL is required.";
   }
 
   if (role === "STUDENT") {
-    if (!branch || !year || cgpa === undefined || backlogs === undefined || !industry || !resumeUrl) {
+    if (!branch || !year || cgpa === undefined || backlogs === undefined || !linkedinUrl || !resumeUrl) {
       return "All student fields are required.";
     }
   }
 
   if (role === "COORDINATOR") {
-    if (!branch || !year || cgpa === undefined || backlogs === undefined || !resumeUrl) {
+    if (!branch || !year || cgpa === undefined || backlogs === undefined  || !linkedinUrl || !resumeUrl) {
       return "All coordinator fields are required.";
     }
   }
 
   if (role === "COMPANY") {
-    if (!companyDescription || !website || !foundedYear || !location) {
+    if (!companyDescription || !website || !foundedYear || !location || !industry) {
       return "All company fields are required.";
     }
   }

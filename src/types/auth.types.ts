@@ -23,4 +23,5 @@ export interface RegisterFormType {
   foundedYear?: string;
   location?: string;
   industry?: string;
+  linkedinUrl?: string;
 }
