@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiUser,
   FiMail,
@@ -14,106 +14,80 @@ import { toast } from "sonner";
 import axios from "axios";
 import type { StudentVerification } from "./types/student.types";
 
-const students = [
+const stats = [
   {
-    id: "CS21001",
-    name: "John Doe",
-    email: "john.doe@college.edu",
-    phone: "+91 9876543210",
-    department: "Computer Science",
-    graduation: "Class of 2024",
-    status: "Verified",
-    avatar: (
-      <svg
-        width="32"
-        height="32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="rounded-full bg-blue-100"
-      >
-        <circle cx="16" cy="16" r="16" fill="#bfdbfe" />
-        <path
-          d="M16 16c3 0 5.5 2.5 5.5 5.5v1.5H10.5v-1.5c0-3 2.5-5.5 5.5-5.5z"
-          fill="#3b82f6"
-        />
-        <circle cx="16" cy="12" r="4" fill="#3b82f6" />
-      </svg>
-    ),
+    label: "Total Students",
+    value: 3,
+    icon: <FiUser className="text-2xl text-blue-500" />,
+    boxCss: "border border-blue-500/40 rounded-md p-4 text-center",
+    textCss: "text-blue-500",
   },
   {
-    id: "CS21002",
-    name: "Jane Smith",
-    email: "jane.smith@college.edu",
-    phone: "+91 9876543211",
-    department: "Computer Science",
-    graduation: "Class of 2024",
-    status: "Pending",
-    avatar: (
-      <svg
-        width="32"
-        height="32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="rounded-full bg-pink-100"
-      >
-        <circle cx="16" cy="16" r="16" fill="#fbcfe8" />
-        <path d="M12 20c0-2 4-2 4-2s4 0 4 2v1H12v-1z" fill="#db2777" />
-        <circle cx="16" cy="12" r="4" fill="#db2777" />
-      </svg>
-    ),
+    label: "Verified",
+    value: 2,
+    icon: <FiCheckCircle className="text-2xl text-gray-800" />,
+    boxCss: "border border-black/20 rounded-md p-4 text-center",
+    textCss: "text-gray-800",
   },
   {
-    id: "EC21001",
-    name: "Mike Johnson",
-    email: "mike.johnson@college.edu",
-    phone: "+91 9876543212",
-    department: "Electronics",
-    graduation: "Class of 2025",
-    status: "Verified",
-    avatar: (
-      <svg
-        width="32"
-        height="32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="rounded-full bg-yellow-100"
-      >
-        <circle cx="16" cy="16" r="16" fill="#fde68a" />
-        <path d="M16 20c3 0 5-2 5-2v-1H11v1s2 2 5 2z" fill="#ca8a04" />
-        <circle cx="16" cy="12" r="4" fill="#ca8a04" />
-      </svg>
-    ),
+    label: "Pending",
+    value: 1,
+    icon: <FiXCircle className="text-2xl text-yellow-500" />,
+    boxCss: "border border-yellow-500/40 rounded-md p-4 text-center",
+    textCss: "text-yellow-500",
+  },
+  {
+    label: "Departments",
+    value: 2,
+    icon: <FiBookOpen className="text-2xl text-green-500" />,
+    boxCss: "border border-green-500/40 rounded-md p-4 text-center",
+    textCss: "text-green-500",
+  },
+];
+
+const filters = [
+  {
+    label: "All Status",
+    options: ["All Status", "Verified", "Pending"],
+  },
+  {
+    label: "All Departments",
+    options: ["All Departments", "Computer Science", "Electronics"],
   },
 ];
 
 export default function StudentManagement() {
-  const [studentVerifyApplication, setStudentVerifyApplication] = useState<StudentVerification[]>([]);
+  const [studentVerifyApplication, setStudentVerifyApplication] = useState<
+    StudentVerification[]
+  >([]);
   const token = localStorage.getItem("token");
 
-  const fetchStudentVerficationApplication = async ()=> {
-    try{
-      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/profile/verification`,
+  const fetchStudentVerficationApplication = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_API_URL}/profile/verification`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        })
+        }
+      );
 
-        console.log("response.data.data: ", response.data.data);
+      console.log("response.data.data: ", response.data.data);
 
-        setStudentVerifyApplication(response.data.data);
-    }catch(err) {
+      setStudentVerifyApplication(response.data.data);
+    } catch (err) {
       toast.error("Error in fetching the student verfication application");
     }
-  }
+  };
 
-  useEffect(()=> {
+  useEffect(() => {
     fetchStudentVerficationApplication();
   }, []);
 
   return (
     <div className="min-h-screen bg-white text-gray-700 font-sans">
-        <SideBar />
+      <SideBar />
 
       <main className="flex-1 p-8 pl-72">
         {/* Content */}
@@ -129,41 +103,27 @@ export default function StudentManagement() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div className="border border-black/10 rounded-lg p-4 text-center">
-              <div className="flex justify-center items-center text-blue-500 mb-1">
-                <FiUser className="text-2xl" />
+            {stats.map((stat, index) => (
+              <div key={index} className={stat.boxCss}>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="flex justify-center items-center mb-1">
+                      {stat.icon}
+                    </div>
+                    <p className={`${stat.textCss}`}>{stat.label}</p>
+                  </div>
+                  <p className={`${stat.textCss} text-xl font-semibold`}>
+                    {stat.value}
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-gray-500">Total Students</p>
-              <p className="font-bold text-lg">3</p>
-            </div>
-            <div className="border border-black/10 rounded-lg p-4 text-center">
-              <div className="flex justify-center items-center text-gray-800 mb-1">
-                <FiCheckCircle className="text-2xl" />
-              </div>
-              <p className="text-xs text-gray-500">Verified</p>
-              <p className="font-bold text-lg">2</p>
-            </div>
-            <div className="border border-black/10 rounded-lg p-4 text-center">
-              <div className="flex justify-center items-center text-yellow-500 mb-1">
-                <FiXCircle className="text-2xl" />
-              </div>
-              <p className="text-xs text-gray-500">Pending</p>
-              <p className="font-bold text-lg">1</p>
-            </div>
-            <div className="border border-black/10 rounded-lg p-4 text-center">
-              <div className="flex justify-center items-center text-green-500 mb-1">
-                <FiBookOpen className="text-2xl" />
-              </div>
-              <p className="text-xs text-gray-500">Departments</p>
-              <p className="font-bold text-lg">2</p>
-            </div>
+            ))}
           </div>
 
           {/* Filters */}
-          <div className="border border-black/10 rounded-lg p-4">
-            <h2 className="font-semibold text-gray-700 mb-2">Filters</h2>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex items-center border border-black/20 rounded-md px-3 py-2 flex-grow max-w-md bg-neutral-50">
+          <div className="rounded-md p-4 flex items-center justify-between">
+            <div className="flex justify-between w-full">
+              <div className="flex items-center border border-black/20 rounded-md px-3 py-2 flex-grow max-w-md">
                 <FiSearch className="text-gray-400 mr-2" />
                 <input
                   type="text"
@@ -171,16 +131,18 @@ export default function StudentManagement() {
                   className="outline-none w-full text-sm"
                 />
               </div>
-              <select className="border border-black/20 rounded-md px-3 py-2 text-sm text-gray-700">
-                <option>All Status</option>
-                <option>Verified</option>
-                <option>Pending</option>
-              </select>
-              <select className="border border-black/20 rounded-md px-3 py-2 text-sm text-gray-700">
-                <option>All Departments</option>
-                <option>Computer Science</option>
-                <option>Electronics</option>
-              </select>
+              <div className="flex gap-3">
+                {filters.map((filter, index) => (
+                  <select
+                    key={index}
+                    className="border border-black/20 rounded-md px-3 py-2 text-sm text-gray-700"
+                  >
+                    {filter.options.map((option, idx) => (
+                      <option key={idx}>{option}</option>
+                    ))}
+                  </select>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -201,7 +163,9 @@ export default function StudentManagement() {
                     className={`ml-auto px-3 py-1 text-xs font-semibold rounded-sm shadow-xs ${
                       s.verificationStatus === "APPROVED"
                         ? "bg-blue-100 text-blue-600"
-                        : s.verificationStatus === "PENDING" ? "bg-gray-200 text-gray-600" : "bg-red-200 text-red-600"
+                        : s.verificationStatus === "PENDING"
+                        ? "bg-gray-200 text-gray-600"
+                        : "bg-red-200 text-red-600"
                     }`}
                   >
                     {s.verificationStatus}

@@ -8,6 +8,10 @@ import {
     FiCalendar,
   } from "react-icons/fi";
   import SideBar from "../components/SideBar";
+import { useEffect, useState } from "react";
+import type { Job } from "../types/job.types";
+import { toast } from "sonner";
+import axios from "axios";
   
   const statsData = [
     {
@@ -84,6 +88,32 @@ import {
   ];
   
   const JobManagement = () => {
+    const [jobs, setJobs] = useState<Job[]>([]);
+    const token = localStorage.getItem("token")
+
+    const fetchJobs = async ()=> {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_API_URL}/job/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if(Array.isArray(response.data.data)){
+          setJobs(response.data.data);
+        }
+      } catch(err){
+        toast.error("Error in fetching jobs");
+      }
+    }
+
+    useEffect(()=> {
+      fetchJobs();
+    }, []);
+
     return (
       <div className="flex min-h-screen bg-gray-50">
         <SideBar />
@@ -136,7 +166,7 @@ import {
   
           {/* Job Cards */}
           <div className="space-y-4">
-            {jobData.map((job, i) => (
+            {jobs.map((job, i) => (
               <div
                 key={i}
                 className="bg-white border border-black/10 p-5 rounded-md shadow-xs flex flex-col gap-3"
@@ -144,7 +174,7 @@ import {
                 <div className="flex justify-between items-start">
                   <div>
                     <h2 className="text-lg font-semibold">{job.title}</h2>
-                    <p className="text-gray-500 text-sm">{job.company}</p>
+                    <p className="text-gray-500 text-sm">{job.company.name}</p>
                   </div>
                   <span className="bg-blue-100 text-blue-600 px-3 py-1 text-xs font-medium rounded-sm shadow-xs">
                     {job.status}
@@ -159,12 +189,12 @@ import {
                     {job.salary}
                   </div>
                   <div className="flex items-center gap-1">
-                    <FiCalendar size={16} /> Posted {job.postedDate}
+                    <FiCalendar size={16} /> Posted {job.createdAt}
                   </div>
                 </div>
   
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2">
+                {/* <div className="flex flex-wrap gap-2">
                   {job.tags.map((tag, idx) => (
                     <span
                       key={idx}
@@ -173,17 +203,17 @@ import {
                       {tag}
                     </span>
                   ))}
-                </div>
+                </div> */}
   
                 <p className="text-sm text-gray-600">
                   Join our team to build next-generation web applications...
                 </p>
   
                 <div className="flex justify-between items-center pt-2">
-                  <p className="text-sm text-gray-500">
+                  {/* <p className="text-sm text-gray-500">
                     {job.applications} application
                     {job.applications !== 1 ? "s" : ""}
-                  </p>
+                  </p> */}
                   <div className="flex gap-2">
                     <button className="px-4 py-2 text-sm border border-black/10 rounded hover:bg-gray-50 hover:cursor-pointer">
                       View Details

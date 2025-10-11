@@ -34,7 +34,6 @@ const StudentJobs: React.FC = () => {
       if(Array.isArray(response.data.data)){
         setInitialJobData(response.data.data);
         setJobs(response.data.data);
-        toast.success("Job are fetched successfully")
       }
     } catch(err){
       toast.error("Error in fetching jobs");

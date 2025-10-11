@@ -12,10 +12,11 @@ import type {
 import axios from "axios";
 import { toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 
 type AuthContextTypes = {
-  user: any,
+  user: any;
   isAuthenticated: boolean;
   login: (loginDetails: LoginFormType) => void;
   register: (registerDetails: RegisterFormType) => void;
@@ -30,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");

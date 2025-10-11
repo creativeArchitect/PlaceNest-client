@@ -28,6 +28,7 @@ const Login: React.FC = () => {
     try{
       console.log("Submitting form:", formData);
       login(formData);
+
     }catch(err){
       toast.error("Error in login");
     }

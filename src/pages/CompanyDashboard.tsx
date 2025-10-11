@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 // import { toast } from "sonner";
 // import axios from "axios";
-import type { Application, Job } from "../types/job.types";
+import type { Job } from "../types/job.types";
 
 // ✅ Mock data (used for now)
 const mockJobs: Job[] = [
@@ -164,19 +164,23 @@ export default function CompanyDashboard() {
 
           {/* Stat cards */}
           <section className="grid grid-cols-4 gap-4 mb-6">
-            <StatCard title="Total Jobs Posted" value={companyJobs.length} />
-            <StatCard title="Active Jobs" value={activeJobs} />
+            <StatCard title="Total Jobs Posted" value={companyJobs.length}
+            boxCss="border border-blue-600/20 rounded-md bg-white p-4" />
+            <StatCard title="Active Jobs" value={activeJobs}
+            boxCss="border border-yellow-600/20 rounded-md bg-white p-4" />
             <StatCard
               title="Total Applications"
               value={jobApplications.length}
+              boxCss="border border-green-600/20 rounded-md bg-white p-4"
             />
-            <StatCard title="Shortlisted" value={shortlistedApplications} />
+            <StatCard title="Shortlisted" value={shortlistedApplications}
+            boxCss="border border-yellow-600/20 rounded-md bg-white p-4" />
           </section>
 
           {/* Job Postings & Applications */}
           <section className="grid grid-cols-2 gap-6 mb-6">
             {/* Recent Job Postings */}
-            <div className="bg-white border border-black/10 rounded p-6">
+            <div className="bg-white border border-blue-600/10 rounded p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-semibold">Recent Job Postings</h3>
@@ -279,9 +283,9 @@ export default function CompanyDashboard() {
   );
 }
 
-function StatCard({ title, value }: { title: string; value: number }) {
+function StatCard({ title, value, boxCss }: { title: string; value: number, boxCss: string }) {
   return (
-    <div className="border border-black/20 rounded-md bg-white p-4">
+    <div className={boxCss}>
       <div className="text-xs text-gray-500 mb-1">{title}</div>
       <div className="text-2xl font-semibold text-gray-800">{value}</div>
     </div>

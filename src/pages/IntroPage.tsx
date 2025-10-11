@@ -12,7 +12,7 @@ const cards = [
     description:
       "Find opportunities, apply for jobs, and get AI-powered resume assistance.",
     buttonText: "Join as Student",
-    boxCss: "border rounded-md border-gray-500/20 shadow-sm p-6 text-center bg-white",
+    boxCss: "border rounded-md border-gray-500/20 shadow-xs p-6 text-center bg-white",
     buttonCss:
       "w-full border border-gray-300 rounded-md py-2 hover:bg-gray-100 text-gray-500 hover:cursor-pointer",
   },
@@ -22,7 +22,7 @@ const cards = [
     description:
       "Post jobs, find talented students, and manage your recruitment process.",
     buttonText: "Join as Company",
-    boxCss: "border rounded-md border-green-500/20 shadow-sm p-6 text-center bg-white",
+    boxCss: "border rounded-md border-green-500/20 shadow-xs p-6 text-center bg-white",
     buttonCss:
       "w-full border border-green-300 rounded-md py-2 hover:bg-green-100 text-green-500 hover:cursor-pointer",
   },
@@ -32,7 +32,7 @@ const cards = [
     description:
       "Manage student verifications, oversee placements, and track analytics.",
     buttonText: "Access Portal",
-    boxCss: "border rounded-md border-blue-500/20 shadow-sm p-6 text-center bg-white",
+    boxCss: "border rounded-md border-blue-500/20 shadow-xs p-6 text-center bg-white",
     buttonCss:
       "w-full border border-blue-300 rounded-md py-2 hover:bg-blue-100 text-blue-500 hover:cursor-pointer",
   },

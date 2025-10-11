@@ -5,7 +5,7 @@ import type { StudentProfile } from "../types/student.types";
 import { toast } from "sonner";
 import axios from "axios";
 
-const StudentProfile: React.FC = () => {
+const Profile: React.FC = () => {
   const [formData, setFormData] = useState<StudentProfile>({
     name: "",
     email: "",
@@ -311,4 +311,4 @@ const StudentProfile: React.FC = () => {
   );
 };
 
-export default StudentProfile;
+export default Profile;

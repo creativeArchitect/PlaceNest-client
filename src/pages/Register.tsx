@@ -63,7 +63,7 @@ const Register: React.FC = () => {
   
     try {
       console.log("Submitting form:", formData);
-      await register(formData);
+      register(formData);
     } catch (err) {
       console.error("Registration error:", err);
       toast.error("Error in registration");
