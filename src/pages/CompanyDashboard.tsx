@@ -8,79 +8,6 @@ import type { Job } from "../types/job.types";
 import type { Application } from "../types/application.types";
 import { useAuth } from "../context/AuthContext";
 
-// ✅ Mock data (used for now)
-// const mockJobs: Job[] = [
-//   {
-//     id: "1",
-//     title: "Frontend Developer",
-//     description: "Develop and maintain UI components using React.",
-//     location: "Bangalore, India",
-//     deadline: "10/11/2025",
-//     status: "ACTIVE",
-//     type: "FullTime",
-//     role: "COMPANY",
-//     package: "10 LPA",
-//     cgpaCutOff: new Float32Array([6.5]),
-//     companyId: "comp123",
-//     applications: ["1", "2", "3"],
-//   },
-//   {
-//     id: "2",
-//     title: "Backend Developer",
-//     description: "Build and maintain backend services using Node.js.",
-//     location: "Noida, India",
-//     deadline: "10/15/2025",
-//     status: "CLOSED",
-//     type: "FullTime",
-//     role: "COMPANY",
-//     package: "12 LPA",
-//     cgpaCutOff: new Float32Array([7.0]),
-//     companyId: "comp123",
-//     applications: ["4", "5"],
-//   },
-//   {
-//     id: "3",
-//     title: "UI/UX Designer",
-//     description: "Design user interfaces and experiences for web platforms.",
-//     location: "Remote",
-//     deadline: "11/01/2025",
-//     status: "ACTIVE",
-//     type: "PartTime",
-//     role: "COMPANY",
-//     package: "6 LPA",
-//     cgpaCutOff: new Float32Array([6.0]),
-//     companyId: "comp123",
-//     applications: [],
-//   },
-// ];
-
-// const mockApplications: Application[] = [
-//   {
-//     id: "a1",
-//     jobTitle: "Frontend Developer",
-//     candidateName: "John Doe",
-//     email: "john@example.com",
-//     date: "10/01/2025",
-//     status: "shortlisted",
-//   },
-//   {
-//     id: "a2",
-//     jobTitle: "Backend Developer",
-//     candidateName: "Jane Smith",
-//     email: "jane@example.com",
-//     date: "10/03/2025",
-//     status: "pending",
-//   },
-//   {
-//     id: "a3",
-//     jobTitle: "UI/UX Designer",
-//     candidateName: "Alex Johnson",
-//     email: "alex@example.com",
-//     date: "10/04/2025",
-//     status: "shortlisted",
-//   },
-// ];
-
 export default function CompanyDashboard() {
   const navigate = useNavigate();
   const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
@@ -181,6 +108,11 @@ export default function CompanyDashboard() {
     }
   };
 
+  useEffect(()=> {
+    fetchJobPosts();
+    fetchJobApplications();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-700">
       <div className="flex">
@@ -206,23 +138,27 @@ export default function CompanyDashboard() {
           <section className="grid grid-cols-4 gap-4 mb-6">
             <StatCard
               title="Total Jobs Posted"
+              titleCss="text-lg text-gray-500"
               value={companyJobs.length}
-              boxCss="border border-blue-600/20 rounded-md bg-white p-4"
+              boxCss="border border-gray-600/20 rounded-md bg-white p-4 flex item-center justify-between"
             />
             <StatCard
               title="Active Jobs"
+              titleCss="text-lg text-blue-500"
               value={activeJobs}
-              boxCss="border border-yellow-600/20 rounded-md bg-white p-4"
+              boxCss="border border-blue-600/20 rounded-md bg-white p-4 flex item-center justify-between"
             />
             <StatCard
               title="Total Applications"
+              titleCss="text-lg text-green-500"
               value={jobApplications.length}
-              boxCss="border border-green-600/20 rounded-md bg-white p-4"
+              boxCss="border border-green-600/20 rounded-md bg-white p-4 flex item-center justify-between"
             />
             <StatCard
               title="Shortlisted"
+              titleCss="text-lg text-yellow-500"
               value={shortlistedApplications}
-              boxCss="border border-yellow-600/20 rounded-md bg-white p-4"
+              boxCss="border border-yellow-600/20 rounded-md bg-white p-4 flex item-center justify-between"
             />
           </section>
 
@@ -238,7 +174,7 @@ export default function CompanyDashboard() {
                   </p>
                 </div>
                 <button
-                  className="text-sm text-blue-600 hover:text-blue-500"
+                  className="text-sm text-blue-600 hover:text-blue-500 hover:cursor-pointer"
                   onClick={() => navigate("/company/jobs")}
                 >
                   View All
@@ -246,7 +182,9 @@ export default function CompanyDashboard() {
               </div>
 
               {loadingJobs ? (
-                <p className="text-sm text-gray-500">Loading recent jobs...</p>
+                    <div className="flex justify-center items-center h-full py-6">
+                    <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
               ) : recentJobs.length === 0 ? (
                 <p className="text-sm text-gray-500">No recent job postings</p>
               ) : (
@@ -293,13 +231,13 @@ export default function CompanyDashboard() {
                     Latest applications for your jobs
                   </p>
                 </div>
-                <button className="text-sm text-blue-600">View All</button>
+                <button className="text-sm text-blue-600 hover:text-blue-500 hover:cursor-pointer">View All</button>
               </div>
               <div className="flex flex-col gap-2 h-80 overflow-y-auto">
                 {loadingApplications ? (
-                  <p className="text-sm text-gray-500">
-                    Loading recent applications...
-                  </p>
+                      <div className="flex justify-center items-center h-full py-6">
+                      <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
                 ) : jobApplications.length === 0 ? (
                   <p className="text-sm text-gray-500">No applications yet</p>
                 ) : (
@@ -345,17 +283,19 @@ export default function CompanyDashboard() {
 
 function StatCard({
   title,
+  titleCss,
   value,
   boxCss,
 }: {
   title: string;
+  titleCss: string;
   value: number;
   boxCss: string;
 }) {
   return (
     <div className={boxCss}>
-      <div className="text-xs text-gray-500 mb-1">{title}</div>
-      <div className="text-2xl font-semibold text-gray-800">{value}</div>
+      <div className={titleCss}>{title}</div>
+      <div className={`text-2xl font-semibold ${titleCss}`}>{value}</div>
     </div>
   );
 }

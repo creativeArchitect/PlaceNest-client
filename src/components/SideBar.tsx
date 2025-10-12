@@ -74,7 +74,7 @@ const SideBar = () => {
         const isActive = activeTab === tab;
         return (
           <button
-            key={tab}
+            key={label}
             onClick={() => {
               setActiveTab(tab);
               navigate(`${route}`);

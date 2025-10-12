@@ -26,7 +26,7 @@ const Register: React.FC = () => {
     email: "",
     phone: "",
     password: "",
-    role: "STUDENT"
+    role: "STUDENT",
   });
 
   const handleChange = (
@@ -37,7 +37,7 @@ const Register: React.FC = () => {
     const { name, value, type } = e.target;
 
     let val: string | number | boolean = value;
-    
+
     if (type === "number") {
       val = value === "" ? undefined : Number(value);
     }
@@ -53,21 +53,26 @@ const Register: React.FC = () => {
 
   const handleSubmit = async () => {
     const error = validateForm(formData, role);
-  
+
     if (error) {
       toast.error(error);
       return;
     }
-  
+
     try {
       console.log("Submitting form:", formData);
+
+      if (!/^[0-9]{10}$/.test(formData.phone)) {
+        toast.error("Please enter a valid 10-digit phone number");
+        return;g
+      }
+
       register(formData);
     } catch (err) {
       console.error("Registration error:", err);
       toast.error("Error in registration");
     }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FEFEFE] px-4 py-5">
@@ -154,7 +159,9 @@ const Register: React.FC = () => {
 
             {/* Name */}
             <div className="mb-3">
-              <label className="block text-sm mb-1 text-gray-600">Full Name</label>
+              <label className="block text-sm mb-1 text-gray-600">
+                Full Name
+              </label>
               <div className="flex items-center border border-black/10 rounded px-3 py-2">
                 <FaEnvelope className="text-gray-400 mr-2" />
                 <input
@@ -196,6 +203,8 @@ const Register: React.FC = () => {
                   value={formData.phone}
                   type="text"
                   onChange={handleChange}
+                  pattern="[0-9]{10}"
+                  maxLength={10}
                   placeholder="Enter your phone"
                   className="flex-1 outline-none text-sm text-gray-700"
                 />
@@ -204,7 +213,9 @@ const Register: React.FC = () => {
 
             {/* Password */}
             <div className="mb-4">
-              <label className="block text-sm mb-1 text-gray-600">Password</label>
+              <label className="block text-sm mb-1 text-gray-600">
+                Password
+              </label>
               <div className="flex items-center border border-black/10 rounded px-3 py-2">
                 <FaLock className="text-gray-400 mr-2" />
                 <input
@@ -366,7 +377,8 @@ const Register: React.FC = () => {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Company Description <span className="text-red-500">*</span>
+                      Company Description{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       name="companyDescription"
@@ -425,7 +437,9 @@ const Register: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   LinkedIn URL{" "}
-                  {role !== "COMPANY" && <span className="text-red-500">*</span>}
+                  {role !== "COMPANY" && (
+                    <span className="text-red-500">*</span>
+                  )}
                 </label>
                 <input
                   name="linkedinUrl"
@@ -506,25 +520,44 @@ const validateForm = (formData: RegisterFormType, role: Role) => {
   }
 
   if (role === "STUDENT") {
-    if (!branch || !year || cgpa === undefined || backlogs === undefined || !linkedinUrl || !resumeUrl) {
+    if (
+      !branch ||
+      !year ||
+      cgpa === undefined ||
+      backlogs === undefined ||
+      !linkedinUrl ||
+      !resumeUrl
+    ) {
       return "All student fields are required.";
     }
   }
 
   if (role === "COORDINATOR") {
-    if (!branch || !year || cgpa === undefined || backlogs === undefined  || !linkedinUrl || !resumeUrl) {
+    if (
+      !branch ||
+      !year ||
+      cgpa === undefined ||
+      backlogs === undefined ||
+      !linkedinUrl ||
+      !resumeUrl
+    ) {
       return "All coordinator fields are required.";
     }
   }
 
   if (role === "COMPANY") {
-    if (!companyDescription || !website || !foundedYear || !location || !industry) {
+    if (
+      !companyDescription ||
+      !website ||
+      !foundedYear ||
+      !location ||
+      !industry
+    ) {
       return "All company fields are required.";
     }
   }
 
   return null;
 };
-
 
 export default Register;
