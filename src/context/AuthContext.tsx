@@ -56,17 +56,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_API_URL}/auth/login`,
-        loginFormData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        loginFormData
       );
 
       if (response.data.success) {
         setUser(response.data.data);
         setToken(response.data.token);
+        setIsAuthenticated(true);
 
         localStorage.setItem("token", response.data.token);
         localStorage.setItem(
@@ -74,6 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           JSON.stringify({...response.data.data})
         );
         toast.success(response.data.message);
+        
       }
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {

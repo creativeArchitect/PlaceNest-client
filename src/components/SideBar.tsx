@@ -33,8 +33,8 @@ const companySidebarItems: SideBarType[] = [
   { label: "Dashboard", icon: MdDashboard, tab: "dashboard", route: "/company/dashboard" },
   { label: "Profile", icon: FiUser, tab: "profile", route: "/profile" },
   { label: "Post Jobs", icon: IoMdAddCircleOutline, tab: "jobs", route: "/company/post-job" },
-  { label: "My Jobs", icon: FiBriefcase, tab: "jobs", route: "/company/jobs" },
-  { label: "Applicants", icon: TbUsers, tab: "applicants", route: "/company/applicants" },
+  { label: "My Jobs", icon: FiBriefcase, tab: "jobs", route: "/company/manage-jobs" },
+  { label: "Applicants", icon: TbUsers, tab: "applicants", route: "/company/students-applications" },
 ];
 
 const coordinatorSidebarItems: SideBarType[] = [
@@ -42,7 +42,7 @@ const coordinatorSidebarItems: SideBarType[] = [
   { label: "Profile", icon: FiUser, tab: "profile", route: "/profile" },
   { label: "Students Verification", icon: RiPassValidLine, tab: "verify-students", route: "/coordinator/manage-students" },
   // { label: "Job Approvals", icon: GrValidate, tab: "job-approvals", route: "/coordinator/manage-jobs" },
-  { label: "Companies", icon: FaRegBuilding, tab: "companies", route: "/coordinator/manage-companies" }
+  { label: "Companies Verifications", icon: FaRegBuilding, tab: "companies", route: "/coordinator/manage-companies" }
 ];
 
 

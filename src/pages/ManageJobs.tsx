@@ -9,43 +9,90 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import SideBar from "../components/SideBar";
-
-const stats = [
-  {
-    heading: "Total Jobs",
-    data: 3,
-    icon: <FiBriefcase className="h-6 w-6" />,
-    boxCss:
-      "border border-gray-500/20 rounded-md bg-gray-300/10 p-4 flex items-center gap-4",
-    contentCss: "text-neutral-500",
-  },
-  {
-    heading: "Active Jobs",
-    data: 1,
-    icon: <FiClock className="h-6 w-6 text-blue-500" />,
-    boxCss:
-      "border border-blue-500/20 rounded-md bg-blue-400/10 p-4 flex items-center gap-4",
-    contentCss: "text-blue-500",
-  },
-  {
-    heading: "Total Applications",
-    data: 1,
-    icon: <FiUsers className="h-6 w-6 text-red-500" />,
-    boxCss:
-      "border border-red-500/20 rounded-md bg-red-400/10 p-4 flex items-center gap-4 p-4 flex items-center gap-4",
-    contentCss: "text-red-500",
-  },
-  {
-    heading: "Pending Jobs",
-    data: 0,
-    icon: <FiClock className="h-6 w-6 text-green-500" />,
-    boxCss:
-      "border border-green-500/20 rounded-md bg-green-400/10 p-4 flex items-center gap-4",
-    contentCss: "text-green-500",
-  },
-];
+import { act, useEffect, useState } from "react";
+import type { Job } from "../types/job.types";
+import { toast } from "sonner";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ManageJobs() {
+  const navigate = useNavigate();
+  const [companyJobs, setCompanyJobs] = useState<Job[]>([]);
+  const [totalActiveJobs, setTotalActiveJobs] = useState<number>(0);
+  const [totalPendingJobs, setTotalPendingJobs] = useState<number>(0);
+  const token = localStorage.getItem("token");
+  const { user } = useAuth();
+
+  const stats = [
+    {
+      heading: "Total Jobs",
+      data: companyJobs.length,
+      icon: <FiBriefcase className="h-6 w-6" />,
+      boxCss:
+        "border border-gray-500/20 rounded-md bg-gray-300/10 p-4 flex items-center gap-4",
+      contentCss: "text-neutral-500",
+    },
+    {
+      heading: "Active Jobs",
+      data: 1,
+      icon: <FiClock className="h-6 w-6 text-blue-500" />,
+      boxCss:
+        "border border-blue-500/20 rounded-md bg-blue-400/10 p-4 flex items-center gap-4",
+      contentCss: "text-blue-500",
+    },
+    {
+      heading: "Total Applications",
+      data: 1,
+      icon: <FiUsers className="h-6 w-6 text-red-500" />,
+      boxCss:
+        "border border-red-500/20 rounded-md bg-red-400/10 p-4 flex items-center gap-4 p-4 flex items-center gap-4",
+      contentCss: "text-red-500",
+    },
+    {
+      heading: "Pending Jobs",
+      data: 0,
+      icon: <FiClock className="h-6 w-6 text-green-500" />,
+      boxCss:
+        "border border-green-500/20 rounded-md bg-green-400/10 p-4 flex items-center gap-4",
+      contentCss: "text-green-500",
+    },
+  ];
+
+  const fetchJobs = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_API_URL}/job/company/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response.data.data: ", response.data.data);
+
+      setCompanyJobs(response.data.data);
+
+      let pendingJobs = 0;
+      let activeJobs = 0;
+      response.data.data.map(j=> {
+        if(j.status === "ACTIVE") {
+          activeJobs++;
+        }else if(j.status === "DRAFT") {
+          pendingJobs++;
+        }
+      })
+      setTotalActiveJobs(activeJobs);
+      setTotalPendingJobs(pendingJobs);
+    } catch (err) {
+      toast.error("Error in fetching jobs");
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <SideBar />
@@ -54,7 +101,8 @@ export default function ManageJobs() {
         {/* Header */}
         <header className="flex justify-between items-center px-8 py-6">
           <h2 className="text-2xl font-bold">Manage Jobs</h2>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+          onClick={()=> navigate('/company/post-job')}>
             + Post New Job
           </button>
         </header>
@@ -105,78 +153,81 @@ export default function ManageJobs() {
 
           {/* Job Cards */}
           <section>
-            <h3 className="text-lg font-semibold mb-4">Your Jobs (1)</h3>
+            <h3 className="text-lg font-semibold mb-4">Your Jobs ({companyJobs.length})</h3>
 
-            <div className="border border-black/10 p-6 rounded-md space-y-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="text-xl font-semibold">
-                    Software Engineer - Frontend
-                  </h4>
-                  <div className="flex gap-2 mt-2">
-                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-sm shadow-xs">
-                      active
-                    </span>
-                    <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-sm shadow-xs">
-                      Expired
-                    </span>
+            {
+              companyJobs.map(j=> (
+                <div className="border border-black/10 p-6 rounded-md space-y-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="text-xl font-semibold">
+                      {j.title}
+                    </h4>
+                    <div className="flex gap-2 mt-2">
+                      <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-sm shadow-xs">
+                        {j.status}
+                      </span>
+                      <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-sm shadow-xs">
+                        {j.deadline}
+                      </span>
+                    </div>
                   </div>
+                  {/* <button className="text-gray-500 hover:text-gray-700 text-xl">
+                    ⋯
+                  </button> */}
                 </div>
-                <button className="text-gray-500 hover:text-gray-700 text-xl">
-                  ⋯
-                </button>
+  
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <FiMapPin /> {j.location}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <FiBriefcase /> {j.type}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <FiDollarSign /> {j.salary}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <FiCalendar /> Posted {j.createdAt}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <FiClock /> Deadline {j.deadline}
+                  </div>
+                  {/* <div className="flex items-center gap-1">
+                    <FiUsers /> {} applications
+                  </div> */}
+                </div>
+  
+                <p className="text-sm text-gray-600">
+                  {j.description}
+                </p>
+  
+                {/* <div className="flex flex-wrap gap-2">
+                  <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                    React
+                  </span>
+                  <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                    TypeScript
+                  </span>
+                  <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                    HTML/CSS
+                  </span>
+                  <span className="px-2 py-1 bg-gray-100 text-sm rounded">
+                    +1 more
+                  </span>
+                </div> */}
+  
+                <div className="flex justify-end gap-3">
+                  <button className="flex items-center gap-2 border border-black/10 px-4 py-2 rounded text-sm hover:bg-gray-50 hover:cursor-pointer">
+                    <FiEye /> Preview
+                  </button>
+                  <button className="flex items-center gap-2 bg-blue-400/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded text-sm hover:bg-blue-700/10 hover:cursor-pointer">
+                    <FiUsers /> 1 Applicants
+                  </button>
+                </div>
               </div>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                <div className="flex items-center gap-1">
-                  <FiMapPin /> Bangalore, India
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiBriefcase /> FULL TIME
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiDollarSign /> ₹6L - ₹12L
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiCalendar /> Posted 1/15/2024
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiClock /> Deadline 2/15/2024
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiUsers /> 1 applications
-                </div>
-              </div>
-
-              <p className="text-sm text-gray-600">
-                Join our team to build next-generation web applications using
-                React, TypeScript, and modern frontend technologies.
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
-                  React
-                </span>
-                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
-                  TypeScript
-                </span>
-                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
-                  HTML/CSS
-                </span>
-                <span className="px-2 py-1 bg-gray-100 text-sm rounded">
-                  +1 more
-                </span>
-              </div>
-
-              <div className="flex justify-end gap-3">
-                <button className="flex items-center gap-2 border border-black/10 px-4 py-2 rounded text-sm hover:bg-gray-50 hover:cursor-pointer">
-                  <FiEye /> Preview
-                </button>
-                <button className="flex items-center gap-2 bg-blue-400/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded text-sm hover:bg-blue-700/10 hover:cursor-pointer">
-                  <FiUsers /> 1 Applicants
-                </button>
-              </div>
-            </div>
+              ))
+            }
           </section>
         </div>
       </main>

@@ -9,41 +9,10 @@ import {
   FiXCircle,
   FiSearch,
 } from "react-icons/fi";
-import SideBar from "./components/SideBar";
+import SideBar from "../components/SideBar";
 import { toast } from "sonner";
 import axios from "axios";
-import type { StudentVerification } from "./types/student.types";
-
-const stats = [
-  {
-    label: "Total Students",
-    value: 3,
-    icon: <FiUser className="text-2xl text-blue-500" />,
-    boxCss: "border border-blue-500/40 rounded-md p-4 text-center",
-    textCss: "text-blue-500",
-  },
-  {
-    label: "Verified",
-    value: 2,
-    icon: <FiCheckCircle className="text-2xl text-gray-800" />,
-    boxCss: "border border-black/20 rounded-md p-4 text-center",
-    textCss: "text-gray-800",
-  },
-  {
-    label: "Pending",
-    value: 1,
-    icon: <FiXCircle className="text-2xl text-yellow-500" />,
-    boxCss: "border border-yellow-500/40 rounded-md p-4 text-center",
-    textCss: "text-yellow-500",
-  },
-  {
-    label: "Departments",
-    value: 2,
-    icon: <FiBookOpen className="text-2xl text-green-500" />,
-    boxCss: "border border-green-500/40 rounded-md p-4 text-center",
-    textCss: "text-green-500",
-  },
-];
+import type { StudentProfile, StudentVerification } from "../types/student.types";
 
 const filters = [
   {
@@ -57,15 +26,49 @@ const filters = [
 ];
 
 export default function StudentManagement() {
-  const [studentVerifyApplication, setStudentVerifyApplication] = useState<
+  const [studentVerifyApplications, setStudentVerifyApplications] = useState<
     StudentVerification[]
   >([]);
+  const [totalVerifiedStudents, setTotalVerifiedStudents] = useState<number>(0);
+  const [totalPendingStudents, setTotalPendingStudents] = useState<number>(0);
+  const [totalRejectedStudents, setTotalRejectedStudents] = useState<number>(0);
   const token = localStorage.getItem("token");
+
+  const stats = [
+    {
+      label: "Total Students",
+      value: studentVerifyApplications.length,
+      icon: <FiUser className="text-2xl text-blue-500" />,
+      boxCss: "border border-blue-500/40 rounded-md p-4 text-center",
+      textCss: "text-blue-500",
+    },
+    {
+      label: "Verified Students",
+      value: totalVerifiedStudents,
+      icon: <FiCheckCircle className="text-2xl text-gray-800" />,
+      boxCss: "border border-black/20 rounded-md p-4 text-center",
+      textCss: "text-gray-800",
+    },
+    {
+      label: "Pending Students",
+      value: totalPendingStudents,
+      icon: <FiXCircle className="text-2xl text-yellow-500" />,
+      boxCss: "border border-yellow-500/40 rounded-md p-4 text-center",
+      textCss: "text-yellow-500",
+    },
+    {
+      label: "Rejected Students",
+      value: totalRejectedStudents,
+      icon: <FiBookOpen className="text-2xl text-red-500" />,
+      boxCss: "border border-red-500/40 rounded-md p-4 text-center",
+      textCss: "text-red-500",
+    },
+  ];
 
   const fetchStudentVerficationApplication = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_API_URL}/profile/verification`,
+        `${import.meta.env.VITE_BASE_API_URL}/verification`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,11 +76,35 @@ export default function StudentManagement() {
         }
       );
 
-      console.log("response.data.data: ", response.data.data);
+      const studentProfiles: StudentVerification[] = [];
+      response.data.data.map(s=> {
+        s.role === "STUDENT" && studentProfiles.push(s);
+      })
 
-      setStudentVerifyApplication(response.data.data);
+      setStudentVerifyApplications(studentProfiles);
+
+      let pending = 0;
+      let verified = 0;
+      let rejected = 0;
+
+      studentProfiles.map(a=> {
+        if(a.verificationStatus === "PENDING"){
+          pending++;
+        }else if (a.verificationStatus === "APPROVED"){
+          verified++;
+        }else {
+          rejected++;
+        }
+      })
+      setTotalPendingStudents(pending);
+      setTotalVerifiedStudents(verified);
+      setTotalRejectedStudents(rejected);
     } catch (err) {
-      toast.error("Error in fetching the student verfication application");
+      if (axios.isAxiosError(err) && err.response) {
+        toast.error(err.response.data?.message || "Error in fetching the student verfication application");
+      } else {
+        toast.error("Error in fetching the student verfication application");
+      }
     }
   };
 
@@ -148,7 +175,7 @@ export default function StudentManagement() {
 
           {/* Student Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {studentVerifyApplication.map((s) => (
+            {studentVerifyApplications.map((s) => (
               <div
                 key={s.id}
                 className="border border-black/10 rounded-md p-4 space-y-3 shadow-xs"
@@ -162,10 +189,10 @@ export default function StudentManagement() {
                   <span
                     className={`ml-auto px-3 py-1 text-xs font-semibold rounded-sm shadow-xs ${
                       s.verificationStatus === "APPROVED"
-                        ? "bg-blue-100 text-blue-600"
+                        ? "bg-blue-50 text-blue-600 border border-blue-600/10"
                         : s.verificationStatus === "PENDING"
-                        ? "bg-gray-200 text-gray-600"
-                        : "bg-red-200 text-red-600"
+                        ? "bg-gray-50 text-gray-600 border border-black/10"
+                        : "bg-red-50 text-red-600 border border-red-600/10"
                     }`}
                   >
                     {s.verificationStatus}
@@ -182,7 +209,7 @@ export default function StudentManagement() {
                     <FiBookOpen /> {s.branch}
                   </p>
                   <p className="flex items-center gap-2">
-                    <FiCalendar /> {s.year}
+                    <FiCalendar /> {s.year} YEAR
                   </p>
                 </div>
                 <div className="flex gap-3 mt-4">
@@ -209,9 +236,16 @@ export default function StudentManagement() {
                       Revoke
                     </button>
                   ) : (
-                    <button className="border border-red-500/40 bg-red-300/10 hover:bg-red-400/10 hover:cursor-pointer text-white rounded-sm py-2 px-4 flex items-center justify-center gap-2 text-sm">
-                      <FiXCircle className="text-red-500" />
+                    <div className="flex items-center gap-2">
+                      <button className="border border-green-500/40 bg-green-300/10 hover:bg-green-400/10 hover:cursor-pointer text-white rounded-sm py-2 px-2 flex items-center justify-center gap-2 text-sm">
+                      <FiXCircle className="text-green-500" />
+                      <span className="text-green-500">Accept</span>
                     </button>
+                      <button className="border border-red-500/40 bg-red-300/10 hover:bg-red-400/10 hover:cursor-pointer text-white rounded-sm py-2 px-2 flex items-center justify-center gap-2 text-sm">
+                      <FiXCircle className="text-red-500" />
+                      <span className="text-red-500">Reject</span>
+                    </button>
+                    </div>
                   )}
                 </div>
               </div>

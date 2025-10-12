@@ -11,51 +11,10 @@ import type { Job } from "../types/job.types";
 import axios from "axios";
 import { toast } from "sonner";
 import type { StudentProfile } from "../types/student.types";
+import type { Company } from "../types/companies.types";
+import type { Application } from "../types/application.types";
 
 // Data Arrays for Dynamic Rendering
-
-const stats = [
-  {
-    icon: <FiUsers className="text-2xl" />,
-    count: 3,
-    title: "Total Students",
-    titleColor: "text-blue-600",
-    subtitle: "2 verified",
-    subtitleColor: "text-blue-500",
-    iconColor: "text-blue-600",
-    boxCss: "border border-blue-600/30",
-  },
-  {
-    icon: <FiBriefcase className="text-2xl" />,
-    count: 3,
-    title: "Registered Companies",
-    titleColor: "text-gray-600",
-    subtitle: "2 verified",
-    subtitleColor: "text-gray-500",
-    iconColor: "text-gray-600",
-    boxCss: "border border-gray-600/30",
-  },
-  {
-    icon: <FiClipboard className="text-2xl" />,
-    count: 4,
-    title: "Active Job Openings",
-    titleColor: "text-yellow-600",
-    subtitle: "3 applications",
-    subtitleColor: "text-yellow-500",
-    iconColor: "text-yellow-600",
-    boxCss: "border border-yellow-600/30",
-  },
-  {
-    icon: <FiCheckCircle className="text-2xl" />,
-    count: 0,
-    title: "Students Placed",
-    titleColor: "text-green-600",
-    subtitle: "Placement Rate: 0%",
-    subtitleColor: "text-green-500",
-    iconColor: "text-green-600",
-    boxCss: "border border-green-600/30",
-  },
-];
 
 const pendingActions = [
   {
@@ -126,22 +85,68 @@ const departments = [
 export default function CoordinatorDashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [students, setStudents] = useState<StudentProfile[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [totalActiveJobs, setTotalActiveJobs] = useState<number>(0);
+  const [totalStudentPlaced, setTotalStudentPlaced] = useState<number>(0);
+
   const token = localStorage.getItem("token");
+
+  const stats = [
+    {
+      icon: <FiUsers className="text-2xl" />,
+      count: students.length,
+      title: "Total Students",
+      titleColor: "text-blue-600",
+      iconColor: "text-blue-600",
+      boxCss: "border border-blue-600/30",
+    },
+    {
+      icon: <FiBriefcase className="text-2xl" />,
+      count: companies.length,
+      title: "Registered Companies",
+      titleColor: "text-gray-600",
+      iconColor: "text-gray-600",
+      boxCss: "border border-gray-600/30",
+    },
+    {
+      icon: <FiClipboard className="text-2xl" />,
+      count: totalActiveJobs,
+      title: "Active Job Openings",
+      titleColor: "text-yellow-600",
+      iconColor: "text-yellow-600",
+      boxCss: "border border-yellow-600/30",
+    },
+    {
+      icon: <FiCheckCircle className="text-2xl" />,
+      count: 0,
+      title: "Students Placed",
+      titleColor: "text-green-600",
+      iconColor: "text-green-600",
+      boxCss: "border border-green-600/30",
+    },
+  ];
 
   const fetchJobs = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_API_URL}/job/`,
+        `${import.meta.env.VITE_BASE_API_URL}/job`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+      console.log("response.data.data: ", response.data.data);
 
-      if (Array.isArray(response.data.data)) {
         setJobs(response.data.data);
-      }
+
+        let activeJobs = 0;
+        response.data.data.map(j=> {
+          if(j.status === "ACTIVE") { 
+            activeJobs++;
+          }
+        })
+        setTotalActiveJobs(activeJobs);
     } catch (err) {
       toast.error("Error in fetching jobs");
     }
@@ -158,9 +163,24 @@ export default function CoordinatorDashboard() {
         }
       );
 
-      if (Array.isArray(response.data.data)) {
         setStudents(response.data.data);
-      }
+    } catch (err) {
+      toast.error("Error in fetching jobs");
+    }
+  };
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_API_URL}/profile/company`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setCompanies(response.data.data);
     } catch (err) {
       toast.error("Error in fetching jobs");
     }
@@ -169,6 +189,7 @@ export default function CoordinatorDashboard() {
   useEffect(() => {
     fetchStudents();
     fetchJobs();
+    fetchCompanies();
   }, []);
 
   return (
@@ -187,7 +208,7 @@ export default function CoordinatorDashboard() {
         {/* Stats */}
         <div className="flex flex-wrap gap-4 my-6">
           {stats.map(
-            ({ icon, count, title, titleColor, subtitle, subtitleColor, iconColor, boxCss }) => (
+            ({ icon, count, title, titleColor, iconColor, boxCss }) => (
               <div
                 key={title}
                 className={`flex items-center justify-between min-w-[200px] flex-1 bg-white rounded-md p-4 shadow-xs ${boxCss}`}
@@ -196,12 +217,9 @@ export default function CoordinatorDashboard() {
                   <div className={`${iconColor}`}>{icon}</div>
                   <div>
                     <p className={`${titleColor}`}>{title}</p>
-                    <p className={`text-xs mt-1 ${subtitleColor}`}>
-                      {subtitle}
-                    </p>
                   </div>
                 </div>
-                <p className={`font-semibold text-lg ${subtitleColor}`}>{count}</p>
+                <p className={`font-semibold text-lg ${titleColor}`}>{count}</p>
               </div>
             )
           )}
@@ -231,7 +249,7 @@ export default function CoordinatorDashboard() {
           </div>
 
           {/* Recent Activities */}
-          <div className="flex-1 bg-white border border-gray-200 rounded-md p-4">
+          {/* <div className="flex-1 bg-white border border-gray-200 rounded-md p-4">
             <h3 className="font-semibold mb-3">Recent Activities</h3>
             <p className="text-gray-400 text-xs mb-4">
               Latest platform activities
@@ -250,7 +268,7 @@ export default function CoordinatorDashboard() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
         </div>
 
         {/* Department-wise Placement Statistics */}

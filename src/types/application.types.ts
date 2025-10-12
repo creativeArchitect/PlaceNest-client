@@ -26,6 +26,11 @@ export interface Application {
   };
 
   studentId: string;
+  student?: {
+    id: string;
+    name: string;
+    email: string;
+  }
 
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string

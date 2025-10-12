@@ -7,7 +7,7 @@ import ResumeAssistant from "./pages/ResumeAssitant";
 import PostJob from "./pages/PostJob";
 import ManageJobs from "./pages/ManageJobs";
 import CoordinatorDashboard from "./pages/CoordinatorDashboard";
-import StudentManagement from "./StudentManagement";
+import StudentManagement from "./pages/StudentManagement";
 // import JobManagement from "./pages/JobManagement";
 import ManageCompanies from "./pages/ManageCompanies";
 import Register from "./pages/Register";
@@ -24,6 +24,8 @@ const PublicOnlyRoute = () => {
   if (!isAuthenticated || !user) {
     return <Outlet />;
   }
+
+  console.log("user.role: ", user);
 
   switch (user.role) {
     case "STUDENT":

@@ -34,10 +34,8 @@ const Register: React.FC = () => {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    // No need to e.preventDefault on input change
     const { name, value, type } = e.target;
 
-    // If it's a number field, you may want to transform to number
     let val: string | number | boolean = value;
     
     if (type === "number") {

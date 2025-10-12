@@ -121,7 +121,7 @@ const ManageCompanies: React.FC = () => {
   const fetchCompanies = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_API_URL}/profile/company`,
+        `${import.meta.env.VITE_BASE_API_URL}/verification`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -129,15 +129,19 @@ const ManageCompanies: React.FC = () => {
         }
       );
 
-      console.log("response.data.data: ", response.data.data);
-      setCompaniesProfiles(response.data.data);
-      setTotalCompaniesProfiles(response.data.data);
+      const companiesProfiles: Company[] = [];
+      response.data.data.map(c=> {
+        c.role === "COMPANY" && companiesProfiles.push(c);
+      })
+
+      setCompaniesProfiles(companiesProfiles);
+      setTotalCompaniesProfiles(companiesProfiles);
 
       let pendingJobs = 0;
       let verifiedCompanies = 0;
       let activeJobs = 0;
 
-      totalCompaniesProfiles.map((p) => {
+      companiesProfiles.map((p) => {
         if (p.verificationStatus === "APPROVED") {
           verifiedCompanies++;
         } else if (p.verificationStatus === "PENDING") {
@@ -213,16 +217,16 @@ const ManageCompanies: React.FC = () => {
               className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
               onChange={(e) => setSelectedStatus(e.target.value)}
             >
-              {status.map((i) => (
-                <option>{i}</option>
+              {status.map((i, idx) => (
+                <option key={idx}>{i}</option>
               ))}
             </select>
             <select
               className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
               onChange={(e) => setSelectedIndustry(e.target.value)}
             >
-              {industries.map((i) => (
-                <option>{i}</option>
+              {industries.map((i, idx) => (
+                <option key={idx}>{i}</option>
               ))}
             </select>
           </div>

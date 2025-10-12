@@ -26,9 +26,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async ()=> {
     try{
-      console.log("Submitting form:", formData);
       login(formData);
-
     }catch(err){
       toast.error("Error in login");
     }

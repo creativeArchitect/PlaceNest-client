@@ -13,22 +13,22 @@ export interface Job {
     description: string
     location: string
     position: string
-    salary: string
+    salary: number
     cgpaCutOff: number
     deadline: string
     status: JobStatus
-    branchCutOff: Branch
+    branchCutOff: Branch[]
 
-    companyId: string
-    company: {
-        id: string;
+    companyId?: string
+    company?: {
+        id?: string;
         name: string;
         industry: string;
         website: string;
       };
     
-      createdAt: string;
-      updatedAt: string;
+      createdAt?: string;
+      updatedAt?: string;
 }
 
 
