@@ -59,6 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loginFormData
       );
 
+      console.log("response.data.data: ", response.data.data);
+
       if (response.data.success) {
         setUser(response.data.data);
         setToken(response.data.token);

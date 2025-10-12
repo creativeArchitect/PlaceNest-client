@@ -24,6 +24,8 @@ export default function ManageJobs() {
   const token = localStorage.getItem("token");
   const { user } = useAuth();
 
+  const [loading, setLoading] = useState<boolean>();
+
   const stats = [
     {
       heading: "Total Jobs",
@@ -35,7 +37,7 @@ export default function ManageJobs() {
     },
     {
       heading: "Active Jobs",
-      data: 1,
+      data: totalActiveJobs,
       icon: <FiClock className="h-6 w-6 text-blue-500" />,
       boxCss:
         "border border-blue-500/20 rounded-md bg-blue-400/10 p-4 flex items-center gap-4",
@@ -51,7 +53,7 @@ export default function ManageJobs() {
     },
     {
       heading: "Pending Jobs",
-      data: 0,
+      data: totalPendingJobs,
       icon: <FiClock className="h-6 w-6 text-green-500" />,
       boxCss:
         "border border-green-500/20 rounded-md bg-green-400/10 p-4 flex items-center gap-4",
@@ -60,6 +62,9 @@ export default function ManageJobs() {
   ];
 
   const fetchJobs = async () => {
+    if (!user?.id || !token) return;
+    setLoading(true);
+
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_API_URL}/job/company/${user.id}`,
@@ -69,29 +74,31 @@ export default function ManageJobs() {
           },
         }
       );
-      console.log("response.data.data: ", response.data.data);
-
-      setCompanyJobs(response.data.data);
+      const jobs = response.data.data;
+      setCompanyJobs(jobs);
 
       let pendingJobs = 0;
       let activeJobs = 0;
-      response.data.data.map(j=> {
-        if(j.status === "ACTIVE") {
-          activeJobs++;
-        }else if(j.status === "DRAFT") {
-          pendingJobs++;
-        }
-      })
+      jobs.forEach((j) => {
+        if (j.status === "ACTIVE") activeJobs++;
+        else if (j.status === "DRAFT") pendingJobs++;
+      });
+
       setTotalActiveJobs(activeJobs);
       setTotalPendingJobs(pendingJobs);
     } catch (err) {
       toast.error("Error in fetching jobs");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    if (user?.id) {
+      fetchJobs();
+    }
+  }, [user?.id]);
+  
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
@@ -101,8 +108,10 @@ export default function ManageJobs() {
         {/* Header */}
         <header className="flex justify-between items-center px-8 py-6">
           <h2 className="text-2xl font-bold">Manage Jobs</h2>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
-          onClick={()=> navigate('/company/post-job')}>
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+            onClick={() => navigate("/company/post-job")}
+          >
             + Post New Job
           </button>
         </header>
@@ -111,7 +120,7 @@ export default function ManageJobs() {
           {/* Stats */}
           <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {stats.map((s) => (
-              <div className={`${s.boxCss} flex`}>
+              <div className={`${s.boxCss} flex`} key={s.heading}>
                 {s.icon}
                 <div className="flex gap-3">
                   <span className={`${s.contentCss} text-md font-semibold`}>
@@ -153,56 +162,62 @@ export default function ManageJobs() {
 
           {/* Job Cards */}
           <section>
-            <h3 className="text-lg font-semibold mb-4">Your Jobs ({companyJobs.length})</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Your Jobs ({companyJobs.length})
+            </h3>
 
-            {
-              companyJobs.map(j=> (
-                <div className="border border-black/10 p-6 rounded-md space-y-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-xl font-semibold">
-                      {j.title}
-                    </h4>
-                    <div className="flex gap-2 mt-2">
-                      <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-sm shadow-xs">
-                        {j.status}
-                      </span>
-                      <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-sm shadow-xs">
-                        {j.deadline}
-                      </span>
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="flex justify-center items-center py-12">
+                  <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              </div>
+            ) : companyJobs.length === 0 ? (
+              <p className="text-gray-500 text-sm">No jobs posted yet.</p>
+            ) : (
+              companyJobs.map((j,idx) => (
+                <div className="border border-black/10 p-6 rounded-md space-y-4" key={idx}>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-xl font-semibold">{j.title}</h4>
+                      <div className="flex gap-2 mt-2">
+                        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-sm shadow-xs">
+                          {j.status}
+                        </span>
+                        <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-sm shadow-xs">
+                          {j.deadline}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  {/* <button className="text-gray-500 hover:text-gray-700 text-xl">
+                    {/* <button className="text-gray-500 hover:text-gray-700 text-xl">
                     ⋯
                   </button> */}
-                </div>
-  
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <FiMapPin /> {j.location}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <FiBriefcase /> {j.type}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FiDollarSign /> {j.salary}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FiCalendar /> Posted {j.createdAt}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FiClock /> Deadline {j.deadline}
-                  </div>
-                  {/* <div className="flex items-center gap-1">
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <FiMapPin /> {j.location}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FiBriefcase /> {j.type}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FiDollarSign /> {j.salary}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FiCalendar /> Posted {j.createdAt}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FiClock /> Deadline {j.deadline}
+                    </div>
+                    {/* <div className="flex items-center gap-1">
                     <FiUsers /> {} applications
                   </div> */}
-                </div>
-  
-                <p className="text-sm text-gray-600">
-                  {j.description}
-                </p>
-  
-                {/* <div className="flex flex-wrap gap-2">
+                  </div>
+
+                  <p className="text-sm text-gray-600">{j.description}</p>
+
+                  {/* <div className="flex flex-wrap gap-2">
                   <span className="px-2 py-1 bg-gray-100 text-sm rounded">
                     React
                   </span>
@@ -216,18 +231,18 @@ export default function ManageJobs() {
                     +1 more
                   </span>
                 </div> */}
-  
-                <div className="flex justify-end gap-3">
-                  <button className="flex items-center gap-2 border border-black/10 px-4 py-2 rounded text-sm hover:bg-gray-50 hover:cursor-pointer">
-                    <FiEye /> Preview
-                  </button>
-                  <button className="flex items-center gap-2 bg-blue-400/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded text-sm hover:bg-blue-700/10 hover:cursor-pointer">
-                    <FiUsers /> 1 Applicants
-                  </button>
+
+                  <div className="flex justify-end gap-3">
+                    <button className="flex items-center gap-2 border border-black/10 px-4 py-2 rounded text-sm hover:bg-gray-50 hover:cursor-pointer">
+                      <FiEye /> Preview
+                    </button>
+                    <button className="flex items-center gap-2 bg-blue-400/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded text-sm hover:bg-blue-700/10 hover:cursor-pointer">
+                      <FiUsers /> 1 Applicants
+                    </button>
+                  </div>
                 </div>
-              </div>
               ))
-            }
+            )}
           </section>
         </div>
       </main>

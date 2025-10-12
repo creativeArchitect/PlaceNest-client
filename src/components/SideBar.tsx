@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FiUser,
   FiBriefcase,
@@ -6,7 +6,7 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 import { MdDashboard, MdLogout } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import type { IconType } from "react-icons";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -32,8 +32,8 @@ const studentSidebarItems: SideBarType[] = [
 const companySidebarItems: SideBarType[] = [
   { label: "Dashboard", icon: MdDashboard, tab: "dashboard", route: "/company/dashboard" },
   { label: "Profile", icon: FiUser, tab: "profile", route: "/profile" },
-  { label: "Post Jobs", icon: IoMdAddCircleOutline, tab: "jobs", route: "/company/post-job" },
-  { label: "My Jobs", icon: FiBriefcase, tab: "jobs", route: "/company/manage-jobs" },
+  { label: "Post Jobs", icon: IoMdAddCircleOutline, tab: "post-jobs", route: "/company/post-job" },
+  { label: "My Jobs", icon: FiBriefcase, tab: "manage-jobs", route: "/company/manage-jobs" },
   { label: "Applicants", icon: TbUsers, tab: "applicants", route: "/company/students-applications" },
 ];
 
@@ -49,17 +49,30 @@ const coordinatorSidebarItems: SideBarType[] = [
 const SideBar = () => {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
 
-  let sidebarItems: SideBarType[] = [];
+  const sidebarItems = useMemo(() => {
+    if (user?.role === "STUDENT") {
+      return studentSidebarItems;
+    } else if (user?.role === "COMPANY") {
+      return companySidebarItems;
+    } else if (user?.role === "COORDINATOR") {
+      return coordinatorSidebarItems;
+    }
+    return [];
+  }, [user?.role]);
 
-  if (user?.role === "STUDENT") {
-    sidebarItems = studentSidebarItems;
-  } else if (user?.role === "COMPANY") {
-    sidebarItems = companySidebarItems;
-  } else if (user?.role === "COORDINATOR") {
-    sidebarItems = coordinatorSidebarItems;
-  }
+  // sync active tab with current path
+  useEffect(() => {
+    if (!user?.role) return;
+  
+    const currItem = sidebarItems.find((item) =>
+      location.pathname.startsWith(item.route)
+    );
+    if (currItem) setActiveTab(currItem.tab);
+  }, [location.pathname, sidebarItems, user?.role]);
+  
 
   return (
     <aside className="w-64 bg-white shadow-md p-6 h-screen fixed top-0 left-0 flex flex-col justify-between">

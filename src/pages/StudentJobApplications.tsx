@@ -125,7 +125,7 @@ export default function StudentJobApplications() {
     }
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     fetchApplications();
   }, []);
 
@@ -158,7 +158,7 @@ export default function StudentJobApplications() {
           {/* stat cards */}
           <section className="grid grid-cols-4 gap-4 mb-6">
             {stats.map((s) => (
-              <div className={`${s.boxCss} flex`}>
+              <div className={`${s.boxCss} flex`} key={s.heading}>
                 {s.icon}
                 <div className="flex gap-3">
                   <span className={`${s.contentCss} text-md font-semibold`}>
@@ -256,51 +256,62 @@ export default function StudentJobApplications() {
                   </tr>
                 </thead>
                 <tbody>
-                  {jobApplications.map((app) => (
-                    <tr
-                      key={app.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
-                    >
-                      <td className="py-3 px-4 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-semibold">
-                          {app.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-800">
-                            {app.name}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {app.email}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">{app.position}</td>
-                      <td className="py-3 px-4">{app.degree}</td>
-                      <td className="py-3 px-4">{app.appliedOn}</td>
-                      <td className="py-3 px-4">
-                        <StatusBadge status={app.status} />
-                      </td>
-                      <td className="py-3 px-4 flex gap-2">
-                        <button className="text-gray-600 hover:text-blue-500">
-                          <FiEye />
-                        </button>
-                        {app.status === "pending" && (
-                          <>
-                            <button className="text-blue-500 hover:text-blue-700">
-                              <FiCheckCircle />
-                            </button>
-                            <button className="text-red-500 hover:text-red-700">
-                              <FiXCircle />
-                            </button>
-                          </>
-                        )}
+                  {jobApplications.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="text-center py-6 text-gray-500 text-sm"
+                      >
+                        🚫 No applications found.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    jobApplications.map((app) => (
+                      <tr
+                        key={app.id}
+                        className="border-b border-gray-100 hover:bg-gray-50"
+                      >
+                        <td className="py-3 px-4 flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-semibold">
+                            {app.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="font-medium text-gray-800">
+                              {app.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {app.email}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">{app.position}</td>
+                        <td className="py-3 px-4">{app.degree}</td>
+                        <td className="py-3 px-4">{app.appliedOn}</td>
+                        <td className="py-3 px-4">
+                          <StatusBadge status={app.status} />
+                        </td>
+                        <td className="py-3 px-4 flex gap-2">
+                          <button className="text-gray-600 hover:text-blue-500">
+                            <FiEye />
+                          </button>
+                          {app.status === "pending" && (
+                            <>
+                              <button className="text-blue-500 hover:text-blue-700">
+                                <FiCheckCircle />
+                              </button>
+                              <button className="text-red-500 hover:text-red-700">
+                                <FiXCircle />
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -323,7 +334,6 @@ function SidebarItem({ label, active }: { label: string; active?: boolean }) {
     </div>
   );
 }
-
 
 function StatusBadge({ status }: { status: Application["status"] }) {
   const map = {
