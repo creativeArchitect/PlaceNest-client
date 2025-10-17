@@ -1,3 +1,4 @@
+import type { Application } from "./application.types";
 
 export type JobType = "Internship" | "PartTime" | "FullTime" | "Contract"
 
@@ -27,6 +28,8 @@ export interface Job {
         website: string;
       };
     
+    applications?: Application[]
+
       createdAt?: string;
       updatedAt?: string;
 }

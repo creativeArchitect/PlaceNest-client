@@ -8,7 +8,7 @@ export interface Application {
   remarks?: string;
 
   jobId: string;
-  job: {
+  job?: {
     id: string;
     title: string;
     type: JobType;

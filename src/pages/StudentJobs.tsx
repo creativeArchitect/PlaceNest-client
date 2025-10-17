@@ -155,7 +155,7 @@ const StudentJobs: React.FC = () => {
                   <div className="flex gap-2">
                     <button
                       className="px-4 py-2 border border-black/10 rounded-md text-gray-700 hover:bg-gray-100 transition text-sm hover:cursor-pointer"
-                      onClick={() => navigate("/student/job")}
+                      onClick={() => navigate(`/student/job/${job.id}`)}
                     >
                       View Details
                     </button>
